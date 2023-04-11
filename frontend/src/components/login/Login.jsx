@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useStore from "../../zustand/store";
+import { useStore } from "../../zustand/store";
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
   const loginRegisterUser = useStore((state) => state.loginRegisterUser);
-
+  const logState = useStore((state) => state.logState);
+  logState();
   const switchForm = () => {
     setIsLogin(!isLogin);
   };
@@ -20,6 +21,7 @@ const LoginPage = () => {
 
     const success = await loginRegisterUser(email, password, username);
     if (success) {
+      logState();
       navigate("/home");
     } else {
       alert("Error");

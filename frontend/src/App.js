@@ -4,6 +4,7 @@ import LoginPage from "./components/login/Login";
 import HomePage from "./components/home/Home";
 import GamePage from "./components/gamepage/Game";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => (
   <BrowserRouter>

@@ -1,43 +1,39 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import {
+  loginRegisterUser,
+  logoutUser,
+  fetchUsers,
+  createGame,
+  fetchUserGames
+} from "./actions";
 
-const useStore = create((set, get) => ({
-  user: null,
-  isLoggedIn: false,
-  setUser: (user) => set({ user }),
-  setLoginState: (isLoggedIn) => set({ isLoggedIn }),
+export const useStore = create(
+  persist(
+    (set, get) => {
+      const logState = () => {
+        console.log("Current state: ", get());
+      };
 
-  loginRegisterUser: async (email, password, username) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3001/users/${username ? "register" : "login"}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, username })
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("accessToken", data.accessToken);
-
-        if (data.user) {
-          get().setUser({ ...data.user, username: data.user.username });
-          get().setLoginState(true);
-        } else {
-          console.error("User object not found in response data");
-          return false;
-        }
-
-        return true;
-      } else {
-        throw new Error(username ? "Failed to register." : "Failed to login.");
-      }
-    } catch (error) {
-      console.error("Error logging in or registering:", error.message);
-      return false;
+      return {
+        user: null,
+        isLoggedIn: false,
+        setUser: (user) => set({ user }),
+        setLoginState: (isLoggedIn) => set({ isLoggedIn }),
+        loginRegisterUser: (email, password, username) =>
+          loginRegisterUser(email, password, username, get, set),
+        setUsers: (users) => set({ users }),
+        fetchUsers: () => fetchUsers(set, get),
+        createGame: (player2, navigate) => createGame(player2, navigate, set),
+        fetchUserGames: () => fetchUserGames(set, get),
+        setGames: (games) => set({ games }),
+        logState,
+        logout: (navigate) => logoutUser(navigate, set)
+      };
+    },
+    {
+      name: "user",
+      storage: createJSONStorage(() => localStorage)
     }
-  }
-}));
-
-export default useStore;
+  )
+);
