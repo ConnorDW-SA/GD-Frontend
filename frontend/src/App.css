@@ -40,3 +40,43 @@
 }
 
 /* ---------------- Mainpage ---------------- */
+
+/* ---------------- Board ---------------- */
+
+.board {
+  height: auto;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.row {
+  display: flex;
+}
+
+.column-letters {
+  display: flex;
+  justify-content: space-between;
+  width: 32%;
+}
+
+.column-letter {
+  width: 12.5%;
+  text-align: center;
+}
+
+.square {
+  width: 60px;
+  height: 60px;
+}
+
+.white {
+  background-color: #f0d9b5;
+}
+
+.black {
+  background-color: #b58863;
+}

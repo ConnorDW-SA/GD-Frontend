@@ -97,6 +97,8 @@ export const createGame = async (player2, navigate, set) => {
   }
 };
 
+// Fetch a game by ID.
+
 export const fetchUserGames = async (set, get) => {
   try {
     const response = await fetch("http://localhost:3001/games/userGames", {
