@@ -14,6 +14,7 @@ export const useStore = create(
       const logState = () => {
         console.log("Current state: ", get());
       };
+      let socket = null;
 
       return {
         user: null,
@@ -28,7 +29,18 @@ export const useStore = create(
         fetchUserGames: () => fetchUserGames(set, get),
         setGames: (games) => set({ games }),
         logState,
-        logout: (navigate) => logoutUser(navigate, set)
+        logout: (navigate) => {
+          console.log("Socket disconnected with ID:", get().socket.id);
+          if (get().socket) {
+            get().socket.disconnect();
+          }
+          logoutUser(navigate, set);
+        },
+
+        setSocketId: (socketId) => {
+          console.log("Socket connected with ID:", socket.id);
+          set({ socket });
+        }
       };
     },
     {

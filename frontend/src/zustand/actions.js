@@ -1,5 +1,15 @@
 // Login or register a user, then navigate to the home page.
 
+
+const initSocketConnection = (userId) => {
+  const socket = require("socket.io-client")("http://localhost:3001", {
+    transports: ["websocket"],
+    upgrade: false
+  });
+  socket.emit("setUserId", { userId });
+  return socket.id;
+};
+
 export const loginRegisterUser = async (
   email,
   password,
@@ -24,6 +34,8 @@ export const loginRegisterUser = async (
       if (data.user) {
         get().setUser({ ...data.user, username: data.user.username });
         get().setLoginState(true);
+        const socketId = initSocketConnection(data.user._id);
+        get().setSocket(socketId);
       } else {
         console.error("User object not found in response data");
         return false;
