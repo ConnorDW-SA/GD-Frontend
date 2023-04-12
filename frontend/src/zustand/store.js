@@ -5,7 +5,9 @@ import {
   logoutUser,
   fetchUsers,
   createGame,
-  fetchUserGames
+  fetchUserGames,
+  fetchGameState,
+  updateGameState
 } from "./actions";
 
 export const useStore = create(
@@ -14,11 +16,11 @@ export const useStore = create(
       const logState = () => {
         console.log("Current state: ", get());
       };
-      let socket = null;
 
       return {
         user: null,
         isLoggedIn: false,
+
         setUser: (user) => set({ user }),
         setLoginState: (isLoggedIn) => set({ isLoggedIn }),
         loginRegisterUser: (email, password, username) =>
@@ -28,18 +30,14 @@ export const useStore = create(
         createGame: (player2, navigate) => createGame(player2, navigate, set),
         fetchUserGames: () => fetchUserGames(set, get),
         setGames: (games) => set({ games }),
+        fetchGameState: (gameId) => fetchGameState(gameId, set, get),
+
+        updateGameState: (gameId, boardState, currentPlayer) =>
+          updateGameState(gameId, boardState, currentPlayer, set),
+
         logState,
         logout: (navigate) => {
-          console.log("Socket disconnected with ID:", get().socket.id);
-          if (get().socket) {
-            get().socket.disconnect();
-          }
           logoutUser(navigate, set);
-        },
-
-        setSocketId: (socketId) => {
-          console.log("Socket connected with ID:", socket.id);
-          set({ socket });
         }
       };
     },

@@ -21,7 +21,6 @@ const LoginPage = () => {
 
     const success = await loginRegisterUser(email, password, username);
     if (success) {
-      logState();
       navigate("/home");
     } else {
       alert("Error");

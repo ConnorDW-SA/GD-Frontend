@@ -1,15 +1,5 @@
 // Login or register a user, then navigate to the home page.
 
-
-const initSocketConnection = (userId) => {
-  const socket = require("socket.io-client")("http://localhost:3001", {
-    transports: ["websocket"],
-    upgrade: false
-  });
-  socket.emit("setUserId", { userId });
-  return socket.id;
-};
-
 export const loginRegisterUser = async (
   email,
   password,
@@ -34,8 +24,6 @@ export const loginRegisterUser = async (
       if (data.user) {
         get().setUser({ ...data.user, username: data.user.username });
         get().setLoginState(true);
-        const socketId = initSocketConnection(data.user._id);
-        get().setSocket(socketId);
       } else {
         console.error("User object not found in response data");
         return false;
@@ -109,7 +97,7 @@ export const createGame = async (player2, navigate, set) => {
   }
 };
 
-// Fetch a game by ID.
+// Fetch a game by user ID.
 
 export const fetchUserGames = async (set, get) => {
   try {
@@ -129,5 +117,63 @@ export const fetchUserGames = async (set, get) => {
     }
   } catch (error) {
     console.error("Error fetching user games:", error.message);
+  }
+};
+
+// Game actions
+
+export const fetchGameState = async (gameId) => {
+  try {
+    const response = await fetch(`http://localhost:3001/games/${gameId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Fetched game state:", data);
+      const { boardState, currentPlayer } = data;
+      return { board: boardState, currentTurn: currentPlayer };
+    } else {
+      throw new Error("Failed to fetch game state.");
+    }
+  } catch (error) {
+    console.error("Error fetching game state:", error.message);
+  }
+};
+
+export const updateGameState = async (
+  gameId,
+  boardState,
+  currentPlayer,
+  set
+) => {
+  try {
+    const response = await fetch(`http://localhost:3001/games/${gameId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      },
+      body: JSON.stringify({
+        boardState,
+        currentPlayer
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update game state.");
+    }
+    const data = await response.json();
+    const {
+      boardState: updatedBoardState,
+      currentPlayer: updatedCurrentPlayer
+    } = data;
+    set({ board: updatedBoardState, currentTurn: updatedCurrentPlayer });
+  } catch (error) {
+    console.error("Error updating game state:", error.message);
   }
 };
