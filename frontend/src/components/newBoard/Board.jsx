@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from "react";
+import piecemap from "./utils/pieceMap";
+import Square from "./Square";
 import {
   isTakingOwnPiece,
   isCorrectTurn,
@@ -9,21 +12,51 @@ import {
   validQueenMove,
   validKingMove,
   isKingInCheck
-} from "./PieceRules.js";
-import { useState } from "react";
-import { initialBoard } from "./boardUtils.js";
+} from "./utils/PieceRules";
 
-export const useBoardLogic = () => {
-  const [board, setBoard] = useState(initialBoard());
-  const [currentTurn, setCurrentTurn] = useState("white");
+const Board = () => {
   const [movedPieces, setMovedPieces] = useState(new Set());
+  const initialBoard = () => {
+    const board = {};
+    const pieces = [
+      ["R", "N", "B", "Q", "K", "B", "N", "R"],
+      Array(8).fill("P"),
+      Array(8).fill(""),
+      Array(8).fill(""),
+      Array(8).fill(""),
+      Array(8).fill(""),
+      Array(8).fill("p"),
+      ["r", "n", "b", "q", "k", "b", "n", "r"]
+    ];
+
+    const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const position = `${letters[j]}${i + 1}`;
+        board[position] = pieces[i][j];
+      }
+    }
+
+    return board;
+  };
+
+  const isEven = (i, j) => (i + j) % 2 === 0;
+  const letters = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  const [board, setBoard] = useState(initialBoard());
 
   const handleDragStart = (e) => {
     e.dataTransfer.setData("text/plain", e.target.id);
   };
+
   const handleDragOver = (e) => {
     e.preventDefault();
   };
+
+  const [currentTurn, setCurrentTurn] = useState("white");
+
+  // --------------------------------------------------------------------
+
   const handleDrop = async (e) => {
     e.preventDefault();
     const fromCoordinates = e.dataTransfer.getData("text/plain");
@@ -102,6 +135,7 @@ export const useBoardLogic = () => {
     if (isKingInCheck(updatedBoard, opponentColor, movedPieces)) {
       console.log("Check!");
     }
+
     setBoard(updatedBoard);
 
     setBoard(updatedBoard);
@@ -114,11 +148,37 @@ export const useBoardLogic = () => {
 
     setCurrentTurn((prevTurn) => (prevTurn === "white" ? "black" : "white"));
   };
-  return {
-    board,
-    currentTurn,
-    handleDragStart,
-    handleDragOver,
-    handleDrop
-  };
+
+  return (
+    <>
+      <div className="board">
+        {Array.from({ length: 8 }, (_, i) => (
+          <div className="row" key={i}>
+            <div className="row-number p-1">{8 - i}</div>
+            {letters.map((letter, j) => (
+              <Square
+                key={j}
+                piece={board[`${letter}${8 - i}`]}
+                piecemap={piecemap}
+                squareColor={isEven(i, j) ? "white" : "black"}
+                coordinates={`${letter}${8 - i}`}
+                handleDragStart={handleDragStart}
+                handleDragOver={handleDragOver}
+                handleDrop={handleDrop}
+              />
+            ))}
+          </div>
+        ))}
+        <div className="column-letters">
+          {letters.map((letter, i) => (
+            <div className="column-letter" key={i}>
+              {letter}
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
 };
+
+export default Board;

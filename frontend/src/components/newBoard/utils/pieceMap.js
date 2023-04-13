@@ -12,7 +12,7 @@ import WhiteKnight from "../../../assets/pieces/w-knight.png";
 import WhiteRook from "../../../assets/pieces/w-rook.png";
 import WhitePawn from "../../../assets/pieces/w-pawn.png";
 
-const pieceMap = {
+const piecemap = {
   K: WhiteKing,
   Q: WhiteQueen,
   B: WhiteBishop,
@@ -27,4 +27,4 @@ const pieceMap = {
   p: BlackPawn
 };
 
-export default pieceMap;
+export default piecemap;

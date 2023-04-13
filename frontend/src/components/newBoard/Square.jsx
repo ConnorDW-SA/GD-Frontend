@@ -1,8 +1,7 @@
 import React from "react";
-import pieceMap from "./utils/pieceMap";
 const Square = ({
   piece,
-  pieceMap,
+  piecemap,
   squareColor,
   coordinates,
   handleDragStart,
@@ -18,13 +17,13 @@ const Square = ({
     >
       {piece && (
         <img
-          src={pieceMap[piece]}
+          src={piecemap[piece]}
           alt={piece}
           id={coordinates}
           draggable
           onDragStart={handleDragStart}
           onDrop={handleDrop}
-          pieceMap={pieceMap}
+          piecemap={piecemap}
           style={{ width: "50px", height: "50px" }}
         />
       )}
