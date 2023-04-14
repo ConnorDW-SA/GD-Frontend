@@ -5,12 +5,7 @@ import {
   isMoveObstructed
 } from "./moveHelpers";
 
-export const legalPawnMove = (
-  sourceSquare,
-  destinationSquare,
-  chessBoard,
-  lastMove
-) => {
+const legalPawnMove = (sourceSquare, destinationSquare, chessBoard) => {
   const sourceRow = parseInt(sourceSquare.position[1]);
   const destinationRow = parseInt(destinationSquare.position[1]);
   const sourceColumn = sourceSquare.position[0];
@@ -57,7 +52,7 @@ export const legalPawnMove = (
   return false;
 };
 
-export const legalRookMove = (sourceSquare, destinationSquare, chessBoard) => {
+const legalRookMove = (sourceSquare, destinationSquare, chessBoard) => {
   const sourcePosition = sourceSquare.position;
   const destinationPosition = destinationSquare.position;
   const isVertical = isVerticalMove(sourcePosition, destinationPosition);
@@ -78,7 +73,7 @@ export const legalRookMove = (sourceSquare, destinationSquare, chessBoard) => {
   return true;
 };
 
-export const legalKnightMove = (sourceSquare, destinationSquare) => {
+const legalKnightMove = (sourceSquare, destinationSquare) => {
   const sourceRow = parseInt(sourceSquare.position[1]);
   const sourceColumn = sourceSquare.position[0].charCodeAt(0);
   const destinationRow = parseInt(destinationSquare.position[1]);
@@ -93,11 +88,7 @@ export const legalKnightMove = (sourceSquare, destinationSquare) => {
   );
 };
 
-export const legalBishopMove = (
-  sourceSquare,
-  destinationSquare,
-  chessBoard
-) => {
+const legalBishopMove = (sourceSquare, destinationSquare, chessBoard) => {
   if (isDiagonalMove(sourceSquare, destinationSquare)) {
     if (
       !isMoveObstructed(sourceSquare, destinationSquare, chessBoard, "diagonal")
@@ -109,7 +100,7 @@ export const legalBishopMove = (
   return false;
 };
 
-export const legalQueenMove = (sourceSquare, destinationSquare, chessBoard) => {
+const legalQueenMove = (sourceSquare, destinationSquare, chessBoard) => {
   if (
     legalRookMove(sourceSquare, destinationSquare, chessBoard) ||
     legalBishopMove(sourceSquare, destinationSquare, chessBoard)
@@ -120,7 +111,11 @@ export const legalQueenMove = (sourceSquare, destinationSquare, chessBoard) => {
   return false;
 };
 
-export const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
+const isHorizontalKingMove = (sourceRow, destinationRow) => {
+  return sourceRow === destinationRow;
+};
+
+const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
   const sourceRow = parseInt(sourceSquare.position[1]);
   const destinationRow = parseInt(destinationSquare.position[1]);
   const sourceColumn = sourceSquare.position[0];
@@ -133,7 +128,8 @@ export const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
 
   const isValidMove =
     (isVerticalMove(sourceColumn, destinationColumn) && rowDifference === 1) ||
-    (isHorizontalMove(sourceRow, destinationRow) && columnDifference === 1) ||
+    (isHorizontalKingMove(sourceRow, destinationRow) &&
+      columnDifference === 1) ||
     (isDiagonalMove(sourceSquare, destinationSquare) &&
       rowDifference === 1 &&
       columnDifference === 1);
@@ -146,7 +142,7 @@ export const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
         chessBoard,
         isVerticalMove(sourceColumn, destinationColumn)
           ? "vertical"
-          : isHorizontalMove(sourceRow, destinationRow)
+          : isHorizontalKingMove(sourceRow, destinationRow)
           ? "horizontal"
           : "diagonal"
       )
@@ -155,5 +151,61 @@ export const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
     }
   }
 
+  return false;
+};
+
+export const isLegalMove = (
+  sourceSquare,
+  destinationSquare,
+  chessBoard,
+  pieceType
+) => {
+  switch (pieceType) {
+    case "pawn":
+      return legalPawnMove(sourceSquare, destinationSquare, chessBoard);
+    case "rook":
+      return legalRookMove(sourceSquare, destinationSquare, chessBoard);
+    case "knight":
+      return legalKnightMove(sourceSquare, destinationSquare, chessBoard);
+    case "bishop":
+      return legalBishopMove(sourceSquare, destinationSquare, chessBoard);
+    case "queen":
+      return legalQueenMove(sourceSquare, destinationSquare, chessBoard);
+    case "king":
+      return legalKingMove(sourceSquare, destinationSquare, chessBoard);
+    default:
+      return false;
+  }
+};
+
+export const findKing = (color, chessBoard) => {
+  for (const row of chessBoard) {
+    for (const square of row) {
+      if (
+        square.piece &&
+        square.piece.type === "king" &&
+        square.piece.color === color
+      ) {
+        return square;
+      }
+    }
+  }
+};
+
+export const isKingAttacked = (kingColor, chessBoard) => {
+  const kingSquare = findKing(kingColor, chessBoard);
+
+  for (const row of chessBoard) {
+    for (const square of row) {
+      if (
+        square.piece &&
+        square.piece.color !== kingColor &&
+        isLegalMove(square, kingSquare, chessBoard, square.piece.type)
+      ) {
+        console.log("check");
+        return true;
+      }
+    }
+  }
   return false;
 };

@@ -2,9 +2,10 @@ export const isVerticalMove = (source, destination) => {
   return source[0] === destination[0];
 };
 
-export const isHorizontalMove = (source, destination) => {
-  return source[1] === destination[1];
-};
+
+export   const isHorizontalMove = (source, destination) => {
+    return source[1] === destination[1];
+  };
 
 export const isDiagonalMove = (source, destination) => {
   return (

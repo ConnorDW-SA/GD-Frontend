@@ -1,13 +1,6 @@
 import { isSameColorPiece, logPieceMove } from "./moveHelpers";
 
-import {
-  legalPawnMove,
-  legalRookMove,
-  legalKnightMove,
-  legalBishopMove,
-  legalQueenMove,
-  legalKingMove
-} from "./pieceMoves";
+import { isLegalMove, isKingAttacked } from "./pieceMoves";
 
 export const handleDrop = (
   event,
@@ -32,62 +25,44 @@ export const handleDrop = (
   }
 
   if (
-    sourceSquare.piece.type === "pawn" &&
-    !legalPawnMove(sourceSquare, destinationSquare, chessBoard)
+    !isLegalMove(
+      sourceSquare,
+      destinationSquare,
+      chessBoard,
+      sourceSquare.piece.type
+    )
   ) {
-    console.log("not legal pawn move");
-    return;
-  }
-  if (
-    sourceSquare.piece.type === "rook" &&
-    !legalRookMove(sourceSquare, destinationSquare, chessBoard)
-  ) {
-    console.log("not legal rook move");
-    return;
-  }
-  if (
-    sourceSquare.piece.type === "knight" &&
-    !legalKnightMove(sourceSquare, destinationSquare, chessBoard)
-  ) {
-    console.log("not legal knight move");
-    return;
-  }
-  if (
-    sourceSquare.piece.type === "bishop" &&
-    !legalBishopMove(sourceSquare, destinationSquare, chessBoard)
-  ) {
-    console.log("not legal bishop move");
-    return;
-  }
-  if (
-    sourceSquare.piece.type === "queen" &&
-    !legalQueenMove(sourceSquare, destinationSquare, chessBoard)
-  ) {
-    console.log("not legal queen move");
-    return;
-  }
-  if (
-    sourceSquare.piece.type === "king" &&
-    !legalKingMove(sourceSquare, destinationSquare, chessBoard)
-  ) {
-    console.log("not legal king move");
+    console.log("not legal move");
     return;
   }
 
-  const updatedBoard = chessBoard.map((row) =>
-    row.map((square) => {
-      if (square.position === sourceSquare.position) {
-        return { ...square, piece: null };
-      }
-      if (square.position === destinationSquare.position) {
-        return { ...square, piece: sourceSquare.piece };
-      }
-      return square;
-    })
-  );
+  const makeMove = (sourceSquare, destinationSquare, board) => {
+    return board.map((row) =>
+      row.map((square) => {
+        if (square.position === sourceSquare.position) {
+          return { ...square, piece: null };
+        }
+        if (square.position === destinationSquare.position) {
+          return { ...square, piece: sourceSquare.piece };
+        }
+        return square;
+      })
+    );
+  };
+
+  const tempBoard = makeMove(sourceSquare, destinationSquare, chessBoard);
+
+  if (isKingAttacked(sourceSquare.piece.color, tempBoard)) {
+    console.log("You are in check");
+    return;
+  }
+
   setLastMove({ sourceSquare, destinationSquare });
-  setChessBoard(updatedBoard);
+  setChessBoard(tempBoard);
   logPieceMove(sourceSquare, destinationSquare);
-
+  isKingAttacked(
+    sourceSquare.piece.color === "white" ? "black" : "white",
+    tempBoard
+  );
   setIsWhiteTurn(!isWhiteTurn);
 };
