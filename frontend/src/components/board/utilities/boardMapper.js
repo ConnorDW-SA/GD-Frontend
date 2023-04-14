@@ -12,45 +12,46 @@ import WhiteRook from "../../../assets/pieces/w-rook.png";
 import WhitePawn from "../../../assets/pieces/w-pawn.png";
 
 export const pieceMapper = {
-  a1: WhiteRook,
-  b1: WhiteKnight,
-  c1: WhiteBishop,
-  d1: WhiteQueen,
-  e1: WhiteKing,
-  f1: WhiteBishop,
-  g1: WhiteKnight,
-  h1: WhiteRook,
-  a2: WhitePawn,
-  b2: WhitePawn,
-  c2: WhitePawn,
-  d2: WhitePawn,
-  e2: WhitePawn,
-  f2: WhitePawn,
-  g2: WhitePawn,
-  h2: WhitePawn,
-  a7: BlackPawn,
-  b7: BlackPawn,
-  c7: BlackPawn,
-  d7: BlackPawn,
-  e7: BlackPawn,
-  f7: BlackPawn,
-  g7: BlackPawn,
-  h7: BlackPawn,
-  a8: BlackRook,
-  b8: BlackKnight,
-  c8: BlackBishop,
-  d8: BlackQueen,
-  e8: BlackKing,
-  f8: BlackBishop,
-  g8: BlackKnight,
-  h8: BlackRook
+  a1: { image: WhiteRook, color: "white", type: "rook" },
+  b1: { image: WhiteKnight, color: "white", type: "knight" },
+  c1: { image: WhiteBishop, color: "white", type: "bishop" },
+  d1: { image: WhiteQueen, color: "white", type: "queen" },
+  e1: { image: WhiteKing, color: "white", type: "king" },
+  f1: { image: WhiteBishop, color: "white", type: "bishop" },
+  g1: { image: WhiteKnight, color: "white", type: "knight" },
+  h1: { image: WhiteRook, color: "white", type: "rook" },
+  a2: { image: WhitePawn, color: "white", type: "pawn" },
+  b2: { image: WhitePawn, color: "white", type: "pawn" },
+  c2: { image: WhitePawn, color: "white", type: "pawn" },
+  d2: { image: WhitePawn, color: "white", type: "pawn" },
+  e2: { image: WhitePawn, color: "white", type: "pawn" },
+  f2: { image: WhitePawn, color: "white", type: "pawn" },
+  g2: { image: WhitePawn, color: "white", type: "pawn" },
+  h2: { image: WhitePawn, color: "white", type: "pawn" },
+  a7: { image: BlackPawn, color: "black", type: "pawn" },
+  b7: { image: BlackPawn, color: "black", type: "pawn" },
+  c7: { image: BlackPawn, color: "black", type: "pawn" },
+  d7: { image: BlackPawn, color: "black", type: "pawn" },
+  e7: { image: BlackPawn, color: "black", type: "pawn" },
+  f7: { image: BlackPawn, color: "black", type: "pawn" },
+  g7: { image: BlackPawn, color: "black", type: "pawn" },
+  h7: { image: BlackPawn, color: "black", type: "pawn" },
+  a8: { image: BlackRook, color: "black", type: "rook" },
+  b8: { image: BlackKnight, color: "black", type: "knight" },
+  c8: { image: BlackBishop, color: "black", type: "bishop" },
+  d8: { image: BlackQueen, color: "black", type: "queen" },
+  e8: { image: BlackKing, color: "black", type: "king" },
+  f8: { image: BlackBishop, color: "black", type: "bishop" },
+  g8: { image: BlackKnight, color: "black", type: "knight" },
+  h8: { image: BlackRook, color: "black", type: "rook" }
 };
 
 export function assignSquareColors(board) {
   return board.map((row, rowIndex) =>
     row.map((square, squareIndex) => ({
       position: square,
-      color: (rowIndex + squareIndex) % 2 === 0 ? "white" : "black"
+      color:
+        (rowIndex + squareIndex) % 2 === 0 ? "white-square" : "black-square"
     }))
   );
 }
@@ -63,3 +64,7 @@ export function initializePieces(board, pieceMapper) {
     }))
   );
 }
+
+export const handleDragStart = (event, square) => {
+  event.dataTransfer.setData("text/plain", JSON.stringify(square));
+};

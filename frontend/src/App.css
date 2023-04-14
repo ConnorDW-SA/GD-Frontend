@@ -52,12 +52,12 @@
   height: 60px;
 }
 
-.black {
-  background-color: black;
+.black-square {
+  background-color: #b58863;
 }
 
-.white {
-  background-color: beige;
+.white-square {
+  background-color: #f0d9b5;
 }
 
 /* ---------------- Board ---------------- */
@@ -93,9 +93,7 @@
 }
 
 .white {
-  background-color: #f0d9b5;
 }
 
 .black {
-  background-color: #b58863;
 }

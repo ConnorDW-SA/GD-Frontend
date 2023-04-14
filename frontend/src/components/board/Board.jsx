@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import {
   pieceMapper,
   assignSquareColors,
-  initializePieces
+  initializePieces,
+  handleDragStart
 } from "./utilities/boardMapper";
-import { handleDragStart, handleDrop } from "./utilities/dragAndDrop";
+import { handleDrop } from "./utilities/dropLogic";
 
 const Board = () => {
   const board = [
@@ -21,6 +22,8 @@ const Board = () => {
   const coloredBoard = assignSquareColors(board);
   const chessBoardWithPieces = initializePieces(coloredBoard, pieceMapper);
   const [chessBoard, setChessBoard] = useState(chessBoardWithPieces);
+  const [isWhiteTurn, setIsWhiteTurn] = useState(true);
+  const [lastMove, setLastMove] = useState(null);
 
   return (
     <div>
@@ -35,15 +38,26 @@ const Board = () => {
                 className={`board-square ${square.color}`}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) =>
-                  handleDrop(event, square, chessBoard, setChessBoard)
+                  handleDrop(
+                    event,
+                    square,
+                    chessBoard,
+                    setChessBoard,
+                    isWhiteTurn,
+                    setIsWhiteTurn,
+                    setLastMove
+                  )
                 }
               >
                 {square.piece && (
                   <img
-                    src={square.piece}
+                    src={square.piece.image}
                     alt=""
-                    className="chess-piece"
-                    draggable="true"
+                    className={`chess-piece ${square.piece.color} ${square.piece.type}`}
+                    draggable={
+                      (isWhiteTurn && square.piece.color === "white") ||
+                      (!isWhiteTurn && square.piece.color === "black")
+                    }
                     onDragStart={(event) => handleDragStart(event, square)}
                   />
                 )}
