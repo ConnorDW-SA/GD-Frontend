@@ -223,12 +223,11 @@ export const isKingAttacked = (kingColor, chessBoard) => {
       if (
         square.piece &&
         square.piece.color !== kingColor &&
-        square.piece.type !== "king" &&
         isLegalMove(square, kingSquare, chessBoard, square.piece.type)
       ) {
-        // console.log(
-        //   `${kingSquare.piece.color} King at ${kingSquare.position} attacked by ${square.piece.type} at ${square.position}`
-        // );
+        console.log(
+          `${kingSquare.piece.color} King at ${kingSquare.position} attacked by ${square.piece.type} at ${square.position}`
+        );
         return true;
       }
     }
@@ -251,7 +250,7 @@ const makeMove = (sourceSquare, destinationSquare, board) => {
   );
 };
 export const isCheckmate = (kingColor, chessBoard) => {
-  outerLoop: for (const row of chessBoard) {
+  for (const row of chessBoard) {
     for (const sourceSquare of row) {
       if (sourceSquare.piece && sourceSquare.piece.color === kingColor) {
         for (const destRow of chessBoard) {
@@ -273,10 +272,7 @@ export const isCheckmate = (kingColor, chessBoard) => {
                 `Attempting move: ${sourceSquare.position} -> ${destinationSquare.position}`
               );
               if (!isKingAttacked(kingColor, tempBoard)) {
-                // console.log(
-                //   `King is not in check after this move:${sourceSquare.piece.color}  ${sourceSquare.piece.type} -> ${destinationSquare.position} ${destinationSquare.piece.color} ${destinationSquare.piece.type} `
-                // );
-                return false; // If this move gets the king out of check, it's not checkmate
+                return false;
               } else {
                 console.log("King is still in check after this move.");
               }
@@ -287,5 +283,5 @@ export const isCheckmate = (kingColor, chessBoard) => {
     }
   }
 
-  return true; // If none of the moves get the king out of check, return true (checkmate)
+  return true;
 };
