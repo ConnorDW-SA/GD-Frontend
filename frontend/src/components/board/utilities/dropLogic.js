@@ -51,14 +51,20 @@ export const handleDrop = (
   };
 
   const tempBoard = makeMove(sourceSquare, destinationSquare, chessBoard);
+  const movingKingColor = sourceSquare.piece.color;
+  const opponentColor = movingKingColor === "white" ? "black" : "white";
 
-  if (isKingAttacked(sourceSquare.piece.color, tempBoard)) {
-    if (isCheckmate(sourceSquare.piece.color, tempBoard)) {
-      console.log("checkmate");
-    } else {
-      console.log("check");
-    }
+  if (isKingAttacked(movingKingColor, tempBoard)) {
+    alert("king cannot move there because he is still in check!");
     return;
+  } else {
+    if (isKingAttacked(opponentColor, tempBoard)) {
+      if (isCheckmate(opponentColor, tempBoard)) {
+        alert("checkmate Maw, its checkmate Iza");
+      } else {
+        alert("this is normal check, because the king can get out of it");
+      }
+    }
   }
 
   setLastMove({ sourceSquare, destinationSquare });
