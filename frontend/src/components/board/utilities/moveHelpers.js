@@ -2,10 +2,9 @@ export const isVerticalMove = (source, destination) => {
   return source[0] === destination[0];
 };
 
-
-export   const isHorizontalMove = (source, destination) => {
-    return source[1] === destination[1];
-  };
+export const isHorizontalMove = (source, destination) => {
+  return source[1] === destination[1];
+};
 
 export const isDiagonalMove = (source, destination) => {
   return (
@@ -22,11 +21,12 @@ export const isSameColorPiece = (sourceSquare, destinationSquare) => {
   }
   return sourceSquare.piece.color === destinationSquare.piece.color;
 };
-
+//edited ---------------------
 export const isMoveObstructed = (
   sourceSquare,
   destinationSquare,
-  chessBoard
+  chessBoard,
+  direction
 ) => {
   const [sourceRow, sourceCol] = getRowAndCol(sourceSquare.position);
   const [destRow, destCol] = getRowAndCol(destinationSquare.position);

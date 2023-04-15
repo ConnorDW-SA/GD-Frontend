@@ -1,6 +1,6 @@
 import { isSameColorPiece, logPieceMove } from "./moveHelpers";
 
-import { isLegalMove, isKingAttacked } from "./pieceMoves";
+import { isLegalMove, isKingAttacked, isCheckmate } from "./pieceMoves";
 
 export const handleDrop = (
   event,
@@ -53,7 +53,11 @@ export const handleDrop = (
   const tempBoard = makeMove(sourceSquare, destinationSquare, chessBoard);
 
   if (isKingAttacked(sourceSquare.piece.color, tempBoard)) {
-    console.log("You are in check");
+    if (isCheckmate(sourceSquare.piece.color, tempBoard)) {
+      console.log("checkmate");
+    } else {
+      console.log("check");
+    }
     return;
   }
 

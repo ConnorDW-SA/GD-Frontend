@@ -160,22 +160,39 @@ export const isLegalMove = (
   chessBoard,
   pieceType
 ) => {
+  if (
+    !destinationSquare ||
+    sourceSquare.position === destinationSquare.position
+  ) {
+    return false;
+  }
+  let legal;
   switch (pieceType) {
     case "pawn":
-      return legalPawnMove(sourceSquare, destinationSquare, chessBoard);
+      legal = legalPawnMove(sourceSquare, destinationSquare, chessBoard);
+      break;
     case "rook":
-      return legalRookMove(sourceSquare, destinationSquare, chessBoard);
+      legal = legalRookMove(sourceSquare, destinationSquare, chessBoard);
+      break;
     case "knight":
-      return legalKnightMove(sourceSquare, destinationSquare, chessBoard);
+      legal = legalKnightMove(sourceSquare, destinationSquare, chessBoard);
+      break;
     case "bishop":
-      return legalBishopMove(sourceSquare, destinationSquare, chessBoard);
+      legal = legalBishopMove(sourceSquare, destinationSquare, chessBoard);
+      break;
     case "queen":
-      return legalQueenMove(sourceSquare, destinationSquare, chessBoard);
+      legal = legalQueenMove(sourceSquare, destinationSquare, chessBoard);
+      break;
     case "king":
-      return legalKingMove(sourceSquare, destinationSquare, chessBoard);
+      legal = legalKingMove(sourceSquare, destinationSquare, chessBoard);
+      break;
     default:
       return false;
   }
+  console.log(
+    `Testing move: ${sourceSquare.position} -> ${destinationSquare.position} (${pieceType}) - Legal: ${legal}`
+  );
+  return legal;
 };
 
 export const findKing = (color, chessBoard) => {
@@ -191,7 +208,6 @@ export const findKing = (color, chessBoard) => {
     }
   }
 };
-
 export const isKingAttacked = (kingColor, chessBoard) => {
   const kingSquare = findKing(kingColor, chessBoard);
 
@@ -202,10 +218,64 @@ export const isKingAttacked = (kingColor, chessBoard) => {
         square.piece.color !== kingColor &&
         isLegalMove(square, kingSquare, chessBoard, square.piece.type)
       ) {
-        console.log("check");
+        console.log(
+          `King at ${kingSquare.position} attacked by ${square.piece.type} at ${square.position}`
+        );
         return true;
       }
     }
   }
   return false;
+};
+
+// added from droplogic
+const makeMove = (sourceSquare, destinationSquare, board) => {
+  return board.map((row) =>
+    row.map((square) => {
+      if (square.position === sourceSquare.position) {
+        return { ...square, piece: null };
+      }
+      if (square.position === destinationSquare.position) {
+        return { ...square, piece: sourceSquare.piece };
+      }
+      return square;
+    })
+  );
+};
+export const isCheckmate = (kingColor, chessBoard) => {
+  for (const row of chessBoard) {
+    for (const sourceSquare of row) {
+      if (sourceSquare.piece && sourceSquare.piece.color === kingColor) {
+        for (const destRow of chessBoard) {
+          for (const destinationSquare of destRow) {
+            if (
+              isLegalMove(
+                sourceSquare,
+                destinationSquare,
+                chessBoard,
+                sourceSquare.piece.type
+              )
+            ) {
+              const tempBoard = makeMove(
+                sourceSquare,
+                destinationSquare,
+                chessBoard
+              );
+              console.log(
+                `Attempting move: ${sourceSquare.position} -> ${destinationSquare.position}`
+              );
+              if (!isKingAttacked(kingColor, tempBoard)) {
+                console.log("King is not in check after this move.");
+                return false; // If this move gets the king out of check, it's not checkmate
+              } else {
+                console.log("King is still in check after this move.");
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return true; // If none of the moves get the king out of check, return true (checkmate)
 };
