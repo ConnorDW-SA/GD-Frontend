@@ -115,6 +115,48 @@ const isHorizontalKingMove = (sourceRow, destinationRow) => {
   return sourceRow === destinationRow;
 };
 
+export const findKing = (color, chessBoard) => {
+  for (const row of chessBoard) {
+    for (const square of row) {
+      if (
+        square.piece &&
+        square.piece.type === "king" &&
+        square.piece.color === color
+      ) {
+        return square;
+      }
+    }
+  }
+};
+
+const getCastlingRookSquare = (color, destinationSquare, chessBoard) => {
+  const kingSquare = findKing(color, chessBoard);
+  const kingRow = kingSquare.position[1];
+  const kingColumn = kingSquare.position[0];
+  const destinationColumn = destinationSquare.position[0];
+
+  const getSquare = (row, column) => {
+    return chessBoard[row - 1].find((square) => square.position[0] === column);
+  };
+
+  if (kingRow === "1" || kingRow === "8") {
+    if (destinationColumn === "c" || destinationColumn === "g") {
+      const rookColumn = destinationColumn === "c" ? "a" : "h";
+      const rookSquare = getSquare(kingRow, rookColumn);
+
+      if (
+        rookSquare.piece &&
+        rookSquare.piece.type === "rook" &&
+        rookSquare.piece.color === color
+      ) {
+        return rookSquare;
+      }
+    }
+  }
+
+  return null;
+};
+
 const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
   const sourceRow = parseInt(sourceSquare.position[1]);
   const destinationRow = parseInt(destinationSquare.position[1]);
@@ -149,6 +191,30 @@ const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
     ) {
       return true;
     }
+  }
+
+  // Add castling logic here
+  const isCastlingMove = (sourceSquare, destinationSquare) => {
+    // Check if the king and the corresponding rook haven't moved yet
+    if (!sourceSquare.piece.hasMoved) {
+      // Check if destinationSquare is a castling position
+      // and if the corresponding rook hasn't moved
+      const rookSquare = getCastlingRookSquare(
+        sourceSquare.piece.color,
+        destinationSquare,
+        chessBoard
+      );
+      if (rookSquare && !rookSquare.piece.hasMoved) {
+        // Further castling conditions and logic
+        console.log("legal castle move");
+        return true;
+      }
+    }
+    return false;
+  };
+
+  if (isCastlingMove(sourceSquare, destinationSquare)) {
+    return true;
   }
 
   return false;
@@ -197,24 +263,11 @@ export const isLegalMove = (
       return false;
   }
   console.log(
-    `Testing move: ${sourceSquare.position} -> ${destinationSquare.position} (${pieceType}) - Legal: ${legal}`
+    `${sourceSquare.position} -> ${destinationSquare.position} (${pieceType}) - Legal: ${legal}`
   );
   return legal;
 };
 
-export const findKing = (color, chessBoard) => {
-  for (const row of chessBoard) {
-    for (const square of row) {
-      if (
-        square.piece &&
-        square.piece.type === "king" &&
-        square.piece.color === color
-      ) {
-        return square;
-      }
-    }
-  }
-};
 export const isKingAttacked = (kingColor, chessBoard) => {
   const kingSquare = findKing(kingColor, chessBoard);
 

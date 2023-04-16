@@ -43,7 +43,10 @@ export const handleDrop = (
           return { ...square, piece: null };
         }
         if (square.position === destinationSquare.position) {
-          return { ...square, piece: sourceSquare.piece };
+          return {
+            ...square,
+            piece: { ...sourceSquare.piece, hasMoved: true }
+          };
         }
         return square;
       })
@@ -60,7 +63,7 @@ export const handleDrop = (
   } else {
     if (isKingAttacked(opponentColor, tempBoard)) {
       if (isCheckmate(opponentColor, tempBoard)) {
-        alert("checkmate Maw, its checkmate Iza");
+        alert("checkmate ");
       } else {
         alert("this is normal check, because the king can get out of it");
       }
@@ -76,3 +79,4 @@ export const handleDrop = (
   );
   setIsWhiteTurn(!isWhiteTurn);
 };
+
