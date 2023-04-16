@@ -1,6 +1,11 @@
 import { isSameColorPiece, logPieceMove } from "./moveHelpers";
 
-import { isLegalMove, isKingAttacked, isCheckmate } from "./pieceMoves";
+import {
+  isLegalMove,
+  isKingAttacked,
+  isCheckmate,
+  makeMove
+} from "./pieceMoves";
 
 export const handleDrop = (
   event,
@@ -36,23 +41,6 @@ export const handleDrop = (
     return;
   }
 
-  const makeMove = (sourceSquare, destinationSquare, board) => {
-    return board.map((row) =>
-      row.map((square) => {
-        if (square.position === sourceSquare.position) {
-          return { ...square, piece: null };
-        }
-        if (square.position === destinationSquare.position) {
-          return {
-            ...square,
-            piece: { ...sourceSquare.piece, hasMoved: true }
-          };
-        }
-        return square;
-      })
-    );
-  };
-
   const tempBoard = makeMove(sourceSquare, destinationSquare, chessBoard);
   const movingKingColor = sourceSquare.piece.color;
   const opponentColor = movingKingColor === "white" ? "black" : "white";
@@ -79,4 +67,3 @@ export const handleDrop = (
   );
   setIsWhiteTurn(!isWhiteTurn);
 };
-

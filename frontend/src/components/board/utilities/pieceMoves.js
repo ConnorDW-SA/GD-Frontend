@@ -5,6 +5,8 @@ import {
   isMoveObstructed
 } from "./moveHelpers";
 
+// PAWN LOGIC -----------------------------------------------------------------------
+
 const legalPawnMove = (sourceSquare, destinationSquare, chessBoard) => {
   const sourceRow = parseInt(sourceSquare.position[1]);
   const destinationRow = parseInt(destinationSquare.position[1]);
@@ -52,6 +54,8 @@ const legalPawnMove = (sourceSquare, destinationSquare, chessBoard) => {
   return false;
 };
 
+// ROOK LOGIC -----------------------------------------------------------------------
+
 const legalRookMove = (sourceSquare, destinationSquare, chessBoard) => {
   const sourcePosition = sourceSquare.position;
   const destinationPosition = destinationSquare.position;
@@ -73,6 +77,8 @@ const legalRookMove = (sourceSquare, destinationSquare, chessBoard) => {
   return true;
 };
 
+// KNIGHT LOGIC -----------------------------------------------------------------------
+
 const legalKnightMove = (sourceSquare, destinationSquare) => {
   const sourceRow = parseInt(sourceSquare.position[1]);
   const sourceColumn = sourceSquare.position[0].charCodeAt(0);
@@ -88,6 +94,8 @@ const legalKnightMove = (sourceSquare, destinationSquare) => {
   );
 };
 
+// BISHOP LOGIC -----------------------------------------------------------------------
+
 const legalBishopMove = (sourceSquare, destinationSquare, chessBoard) => {
   if (isDiagonalMove(sourceSquare, destinationSquare)) {
     if (
@@ -100,6 +108,8 @@ const legalBishopMove = (sourceSquare, destinationSquare, chessBoard) => {
   return false;
 };
 
+// QUEEN LOGIC -----------------------------------------------------------------------
+
 const legalQueenMove = (sourceSquare, destinationSquare, chessBoard) => {
   if (
     legalRookMove(sourceSquare, destinationSquare, chessBoard) ||
@@ -110,6 +120,54 @@ const legalQueenMove = (sourceSquare, destinationSquare, chessBoard) => {
 
   return false;
 };
+
+/*
+---------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------
+// HELPER FUNCTIONS -------------------------------------------------------------------------------------------------------
+*/
+
+export const makeMove = (sourceSquare, destinationSquare, board) => {
+  return board.map((row) =>
+    row.map((square) => {
+      if (square.position === sourceSquare.position) {
+        return { ...square, piece: null };
+      }
+      if (square.position === destinationSquare.position) {
+        const updatedPiece = {
+          ...sourceSquare.piece,
+          hasMoved:
+            sourceSquare.piece.type === "king" ||
+            sourceSquare.piece.type === "rook"
+              ? true
+              : sourceSquare.piece.hasMoved
+        };
+
+        if (
+          sourceSquare.piece.type === "king" ||
+          sourceSquare.piece.type === "rook"
+        ) {
+          console.log(
+            `Piece moved: ${updatedPiece.color} ${updatedPiece.type}, hasMoved: ${updatedPiece.hasMoved}`
+          );
+        }
+
+        return {
+          ...square,
+          piece: updatedPiece
+        };
+      }
+      return square;
+    })
+  );
+};
+
+// CASTLING LOGIC -----------------------------------------------------------------------
+
+// KINGLOGIC -----------------------------------------------------------------------
 
 const isHorizontalKingMove = (sourceRow, destinationRow) => {
   return sourceRow === destinationRow;
@@ -129,34 +187,6 @@ export const findKing = (color, chessBoard) => {
   }
 };
 
-const getCastlingRookSquare = (color, destinationSquare, chessBoard) => {
-  const kingSquare = findKing(color, chessBoard);
-  const kingRow = kingSquare.position[1];
-  const kingColumn = kingSquare.position[0];
-  const destinationColumn = destinationSquare.position[0];
-
-  const getSquare = (row, column) => {
-    return chessBoard[row - 1].find((square) => square.position[0] === column);
-  };
-
-  if (kingRow === "1" || kingRow === "8") {
-    if (destinationColumn === "c" || destinationColumn === "g") {
-      const rookColumn = destinationColumn === "c" ? "a" : "h";
-      const rookSquare = getSquare(kingRow, rookColumn);
-
-      if (
-        rookSquare.piece &&
-        rookSquare.piece.type === "rook" &&
-        rookSquare.piece.color === color
-      ) {
-        return rookSquare;
-      }
-    }
-  }
-
-  return null;
-};
-
 const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
   const sourceRow = parseInt(sourceSquare.position[1]);
   const destinationRow = parseInt(destinationSquare.position[1]);
@@ -171,7 +201,8 @@ const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
   const isValidMove =
     (isVerticalMove(sourceColumn, destinationColumn) && rowDifference === 1) ||
     (isHorizontalKingMove(sourceRow, destinationRow) &&
-      columnDifference === 1) ||
+      (columnDifference === 1 ||
+        (columnDifference === 2 && !sourceSquare.piece.hasMoved))) ||
     (isDiagonalMove(sourceSquare, destinationSquare) &&
       rowDifference === 1 &&
       columnDifference === 1);
@@ -193,32 +224,10 @@ const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
     }
   }
 
-  // Add castling logic here
-  const isCastlingMove = (sourceSquare, destinationSquare) => {
-    // Check if the king and the corresponding rook haven't moved yet
-    if (!sourceSquare.piece.hasMoved) {
-      // Check if destinationSquare is a castling position
-      // and if the corresponding rook hasn't moved
-      const rookSquare = getCastlingRookSquare(
-        sourceSquare.piece.color,
-        destinationSquare,
-        chessBoard
-      );
-      if (rookSquare && !rookSquare.piece.hasMoved) {
-        // Further castling conditions and logic
-        console.log("legal castle move");
-        return true;
-      }
-    }
-    return false;
-  };
-
-  if (isCastlingMove(sourceSquare, destinationSquare)) {
-    return true;
-  }
-
   return false;
 };
+
+// LEGAL MOVE LOGIC -----------------------------------------------------------------------
 
 export const isLegalMove = (
   sourceSquare,
@@ -262,11 +271,10 @@ export const isLegalMove = (
     default:
       return false;
   }
-  console.log(
-    `${sourceSquare.position} -> ${destinationSquare.position} (${pieceType}) - Legal: ${legal}`
-  );
   return legal;
 };
+
+// CHECK LOGIC -----------------------------------------------------------------------
 
 export const isKingAttacked = (kingColor, chessBoard) => {
   const kingSquare = findKing(kingColor, chessBoard);
@@ -288,20 +296,8 @@ export const isKingAttacked = (kingColor, chessBoard) => {
   return false;
 };
 
-// added from droplogic
-const makeMove = (sourceSquare, destinationSquare, board) => {
-  return board.map((row) =>
-    row.map((square) => {
-      if (square.position === sourceSquare.position) {
-        return { ...square, piece: null };
-      }
-      if (square.position === destinationSquare.position) {
-        return { ...square, piece: sourceSquare.piece };
-      }
-      return square;
-    })
-  );
-};
+// CHECKMATE LOGIC -----------------------------------------------------------------------
+
 export const isCheckmate = (kingColor, chessBoard) => {
   for (const row of chessBoard) {
     for (const sourceSquare of row) {
