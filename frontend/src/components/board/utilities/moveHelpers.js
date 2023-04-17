@@ -1,3 +1,5 @@
+let lastMove = null;
+
 export const isVerticalMove = (source, destination) => {
   return source[0] === destination[0];
 };
@@ -65,4 +67,29 @@ export const logPieceMove = (sourceSquare, destinationSquare) => {
     "to",
     destinationSquare.position
   );
+  lastMove = {
+    from: sourceSquare.position,
+    to: destinationSquare.position,
+    piece: sourceSquare.piece,
+    isPawnDoubleMove:
+      sourceSquare.piece.type === "pawn" &&
+      Math.abs(destinationSquare.position[1] - sourceSquare.position[1]) === 2
+  };
+};
+
+export const getLastMove = () => {
+  return lastMove;
+};
+
+export const removePiece = (position, chessBoard) => {
+  const newBoard = chessBoard.map((row) => {
+    return row.map((square) => {
+      if (square.position === position) {
+        return { ...square, piece: null };
+      } else {
+        return square;
+      }
+    });
+  });
+  return newBoard;
 };

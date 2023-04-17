@@ -2,12 +2,18 @@ import {
   isVerticalMove,
   isDiagonalMove,
   isHorizontalMove,
-  isMoveObstructed
+  isMoveObstructed,
+  getLastMove
 } from "./moveHelpers";
+
+import WhiteQueen from "../../../assets/pieces/w-queen.png";
+import BlackQueen from "../../../assets/pieces/b-queen.png";
 
 // PAWN LOGIC -----------------------------------------------------------------------
 
-const legalPawnMove = (sourceSquare, destinationSquare, chessBoard) => {
+export const legalPawnMove = (sourceSquare, destinationSquare, chessBoard) => {
+  const lastMove = getLastMove();
+
   const sourceRow = parseInt(sourceSquare.position[1]);
   const destinationRow = parseInt(destinationSquare.position[1]);
   const sourceColumn = sourceSquare.position[0];
@@ -31,25 +37,34 @@ const legalPawnMove = (sourceSquare, destinationSquare, chessBoard) => {
     moveDistance === direction &&
     destinationSquare.piece;
 
+  const isEnPassantCapture =
+    lastMove &&
+    lastMove.isPawnDoubleMove &&
+    lastMove.piece.type === "pawn" &&
+    lastMove.piece.color !== sourceSquare.piece.color &&
+    moveDistance === direction &&
+    destinationRow === (isWhite ? 6 : 3) &&
+    Math.abs(sourceColumn.charCodeAt(0) - destinationColumn.charCodeAt(0)) ===
+      1 &&
+    Math.abs(sourceColumn.charCodeAt(0) - lastMove.to[0].charCodeAt(0)) === 1 &&
+    !destinationSquare.piece;
+
   if (
     (isSameColumn && isVerticalOneOrTwoSquares && !destinationSquare.piece) ||
-    isDiagonalCapture
-  )
+    isDiagonalCapture ||
+    isEnPassantCapture
+  ) {
     if (
-      (isSameColumn && isVerticalOneOrTwoSquares && !destinationSquare.piece) ||
-      isDiagonalCapture
+      !isMoveObstructed(
+        sourceSquare,
+        destinationSquare,
+        chessBoard,
+        isVerticalOneOrTwoSquares ? "vertical" : "diagonal"
+      )
     ) {
-      if (
-        !isMoveObstructed(
-          sourceSquare,
-          destinationSquare,
-          chessBoard,
-          isVerticalOneOrTwoSquares ? "vertical" : "diagonal"
-        )
-      ) {
-        return true;
-      }
+      return true;
     }
+  }
 
   return false;
 };
@@ -130,6 +145,41 @@ const legalQueenMove = (sourceSquare, destinationSquare, chessBoard) => {
 // HELPER FUNCTIONS -------------------------------------------------------------------------------------------------------
 */
 
+export const promotePawnToQueen = (
+  chessBoard,
+  sourceSquare,
+  destinationSquare
+) => {
+  const newBoard = chessBoard.map((row) =>
+    row.map((square) => {
+      if (square.position === destinationSquare.position) {
+        return {
+          ...square,
+          piece: {
+            type: "queen",
+            color: sourceSquare.piece.color,
+            image:
+              sourceSquare.piece.color === "white" ? WhiteQueen : BlackQueen
+          }
+        };
+      }
+      return square;
+    })
+  );
+  return newBoard;
+};
+
+export const findSquare = (chessBoard, position) => {
+  for (const row of chessBoard) {
+    for (const square of row) {
+      if (square.position === position) {
+        return square;
+      }
+    }
+  }
+  return null;
+};
+
 export const makeMove = (sourceSquare, destinationSquare, board) => {
   return board.map((row) =>
     row.map((square) => {
@@ -187,7 +237,12 @@ export const findKing = (color, chessBoard) => {
   }
 };
 
-const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
+const legalKingMove = (
+  sourceSquare,
+  destinationSquare,
+  chessBoard,
+  movedPieces
+) => {
   const sourceRow = parseInt(sourceSquare.position[1]);
   const destinationRow = parseInt(destinationSquare.position[1]);
   const sourceColumn = sourceSquare.position[0];
@@ -198,16 +253,25 @@ const legalKingMove = (sourceSquare, destinationSquare, chessBoard) => {
     destinationColumn.charCodeAt(0) - sourceColumn.charCodeAt(0)
   );
 
-  const isValidMove =
+  const isOneSquareMove =
     (isVerticalMove(sourceColumn, destinationColumn) && rowDifference === 1) ||
     (isHorizontalKingMove(sourceRow, destinationRow) &&
-      (columnDifference === 1 ||
-        (columnDifference === 2 && !sourceSquare.piece.hasMoved))) ||
+      columnDifference === 1) ||
     (isDiagonalMove(sourceSquare, destinationSquare) &&
       rowDifference === 1 &&
       columnDifference === 1);
 
-  if (isValidMove) {
+  const isCastlingMove =
+    sourceRow === destinationRow &&
+    columnDifference === 2 &&
+    !sourceSquare.piece.hasMoved &&
+    (!movedPieces || !movedPieces.has(`${sourceColumn}${sourceRow}`)) &&
+    (!movedPieces ||
+      !movedPieces.has(
+        `${destinationColumn < sourceColumn ? "a" : "h"}${sourceRow}`
+      ));
+
+  if (isOneSquareMove || isCastlingMove) {
     if (
       !isMoveObstructed(
         sourceSquare,
