@@ -6,6 +6,7 @@ import {
   handleDragStart
 } from "./utilities/boardMapper";
 import { handleDrop } from "./utilities/dropLogic";
+import { useStore } from "../../zustand/store";
 
 const Board = () => {
   const board = [

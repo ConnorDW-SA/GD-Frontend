@@ -85,3 +85,15 @@ Enabling drag on chess pieces
 export const handleDragStart = (event, square) => {
   event.dataTransfer.setData("text/plain", JSON.stringify(square));
 };
+
+export const convertBackendBoardToFrontend = (backendBoard, pieceMapper) => {
+  const frontendBoard = {};
+  for (const position in backendBoard) {
+    const piece = backendBoard[position];
+    frontendBoard[position] = {
+      ...pieceMapper[piece],
+      hasMoved: piece.hasMoved || false
+    };
+  }
+  return frontendBoard;
+};

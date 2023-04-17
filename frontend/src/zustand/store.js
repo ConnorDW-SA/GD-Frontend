@@ -20,7 +20,8 @@ export const useStore = create(
       return {
         user: null,
         isLoggedIn: false,
-
+        board: null,
+        currentTurn: "white",
         setUser: (user) => set({ user }),
         setLoginState: (isLoggedIn) => set({ isLoggedIn }),
         loginRegisterUser: (email, password, username) =>
