@@ -87,7 +87,7 @@ export const handleDrop = (
   ) {
     tempBoard = promotePawnToQueen(tempBoard, sourceSquare, destinationSquare);
   }
-  // ... rest of the code
+
 
   if (isKingAttacked(movingKingColor, tempBoard)) {
     alert("king cannot move there because he is still in check!");

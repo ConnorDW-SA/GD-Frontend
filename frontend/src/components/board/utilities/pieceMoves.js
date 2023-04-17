@@ -261,10 +261,16 @@ const legalKingMove = (
       rowDifference === 1 &&
       columnDifference === 1);
 
+  const rookSourceColumn = destinationColumn < sourceColumn ? "a" : "h";
+  const rookSquare = findSquare(chessBoard, `${rookSourceColumn}${sourceRow}`);
+
   const isCastlingMove =
     sourceRow === destinationRow &&
     columnDifference === 2 &&
     !sourceSquare.piece.hasMoved &&
+    rookSquare.piece &&
+    rookSquare.piece.type === "rook" &&
+    !rookSquare.piece.hasMoved &&
     (!movedPieces || !movedPieces.has(`${sourceColumn}${sourceRow}`)) &&
     (!movedPieces ||
       !movedPieces.has(
