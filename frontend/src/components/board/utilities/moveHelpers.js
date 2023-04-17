@@ -1,12 +1,28 @@
+/* 
+By default lastMove is null
+*/
+
 let lastMove = null;
+
+/* 
+Helper function for moving up and down
+*/
 
 export const isVerticalMove = (source, destination) => {
   return source[0] === destination[0];
 };
 
+/* 
+Helper function for moving sideways
+*/
+
 export const isHorizontalMove = (source, destination) => {
   return source[1] === destination[1];
 };
+
+/* 
+Helper function for moving diagonally
+*/
 
 export const isDiagonalMove = (source, destination) => {
   return (
@@ -17,13 +33,23 @@ export const isDiagonalMove = (source, destination) => {
   );
 };
 
+/* 
+Helper function for stopping pieces taking their own pieces
+*/
+
 export const isSameColorPiece = (sourceSquare, destinationSquare) => {
   if (destinationSquare.piece === null) {
     return false;
   }
   return sourceSquare.piece.color === destinationSquare.piece.color;
 };
-//edited ---------------------
+
+/* 
+Helper function for determining if the squares betwen pieces is occupied.
+Useful for every piece except king and knight as king can only move 1 square at all times
+and knights can move over other pieces (pawns can move 2 squares on first turn)
+*/
+
 export const isMoveObstructed = (
   sourceSquare,
   destinationSquare,
@@ -58,6 +84,10 @@ const getRowAndCol = (position) => {
   return [row, col];
 };
 
+/* 
+Helper function for logging the last move made, to supply proper chess notation
+*/
+
 export const logPieceMove = (sourceSquare, destinationSquare) => {
   console.log(
     sourceSquare.piece.color,
@@ -80,6 +110,10 @@ export const logPieceMove = (sourceSquare, destinationSquare) => {
 export const getLastMove = () => {
   return lastMove;
 };
+
+/* 
+Helper function for removing a piece from the board after a successful en passant move
+*/
 
 export const removePiece = (position, chessBoard) => {
   const newBoard = chessBoard.map((row) => {

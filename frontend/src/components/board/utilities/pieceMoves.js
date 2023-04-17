@@ -215,9 +215,7 @@ export const makeMove = (sourceSquare, destinationSquare, board) => {
   );
 };
 
-// CASTLING LOGIC -----------------------------------------------------------------------
-
-// KINGLOGIC -----------------------------------------------------------------------
+// KINGLOGIC + CASTLING -----------------------------------------------------------------------
 
 const isHorizontalKingMove = (sourceRow, destinationRow) => {
   return sourceRow === destinationRow;

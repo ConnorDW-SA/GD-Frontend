@@ -1,3 +1,7 @@
+/* 
+Imports
+*/
+
 import BlackKing from "../../../assets/pieces/b-king.png";
 import BlackQueen from "../../../assets/pieces/b-queen.png";
 import BlackBishop from "../../../assets/pieces/b-bishop.png";
@@ -10,6 +14,11 @@ import WhiteBishop from "../../../assets/pieces/w-bishop.png";
 import WhiteKnight from "../../../assets/pieces/w-knight.png";
 import WhiteRook from "../../../assets/pieces/w-rook.png";
 import WhitePawn from "../../../assets/pieces/w-pawn.png";
+
+/* 
+Assigning pieces to their correct starting position, including hasMoved property which helps castling logic -
+Castling cannot occur if rook or king has moved (even if they go back to their starting position)
+*/
 
 export const pieceMapper = {
   a1: { image: WhiteRook, color: "white", type: "rook", hasMoved: false },
@@ -46,6 +55,10 @@ export const pieceMapper = {
   h8: { image: BlackRook, color: "black", type: "rook", hasMoved: false }
 };
 
+/* 
+Mapping color to square, with A1 being black square as per standard chess board
+*/
+
 export function assignSquareColors(board) {
   return board.map((row, rowIndex) =>
     row.map((square, squareIndex) => ({
@@ -56,6 +69,10 @@ export function assignSquareColors(board) {
   );
 }
 
+/* 
+Mapping pieces to squares
+*/
+
 export function initializePieces(board, pieceMapper) {
   return board.map((row) =>
     row.map((square) => ({
@@ -64,6 +81,10 @@ export function initializePieces(board, pieceMapper) {
     }))
   );
 }
+
+/* 
+Enabling drag on chess pieces
+*/
 
 export const handleDragStart = (event, square) => {
   event.dataTransfer.setData("text/plain", JSON.stringify(square));
