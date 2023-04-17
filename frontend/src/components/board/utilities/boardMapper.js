@@ -1,7 +1,3 @@
-/* 
-Imports
-*/
-
 import BlackKing from "../../../assets/pieces/b-king.png";
 import BlackQueen from "../../../assets/pieces/b-queen.png";
 import BlackBishop from "../../../assets/pieces/b-bishop.png";
