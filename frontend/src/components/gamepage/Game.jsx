@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import Board from "../newBoard/Board";
+import Board from "../board/Board";
 
 const GamePage = () => {
   const { gameId } = useParams();
