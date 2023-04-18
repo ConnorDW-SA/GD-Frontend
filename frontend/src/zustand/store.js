@@ -35,7 +35,7 @@ export const useStore = create(
 
         updateGameState: (gameId, boardState, currentPlayer) =>
           updateGameState(gameId, boardState, currentPlayer, set),
-
+        setBoard: (board) => set({ board }),
         logState,
         logout: (navigate) => {
           logoutUser(navigate, set);

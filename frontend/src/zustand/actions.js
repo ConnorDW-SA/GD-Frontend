@@ -174,9 +174,11 @@ export const updateGameState = async (
       })
     });
 
+    console.log("Response status:", response.status);
     if (!response.ok) {
       throw new Error("Failed to update game state.");
     }
+
     const data = await response.json();
     const {
       boardState: updatedBoardState,

@@ -17,43 +17,40 @@ Castling cannot occur if rook or king has moved (even if they go back to their s
 */
 
 export const pieceMapper = {
-  a1: { image: WhiteRook, color: "white", type: "rook", hasMoved: false },
-  b1: { image: WhiteKnight, color: "white", type: "knight" },
-  c1: { image: WhiteBishop, color: "white", type: "bishop" },
-  d1: { image: WhiteQueen, color: "white", type: "queen" },
-  e1: { image: WhiteKing, color: "white", type: "king", hasMoved: false },
-  f1: { image: WhiteBishop, color: "white", type: "bishop" },
-  g1: { image: WhiteKnight, color: "white", type: "knight" },
-  h1: { image: WhiteRook, color: "white", type: "rook", hasMoved: false },
-  a2: { image: WhitePawn, color: "white", type: "pawn" },
-  b2: { image: WhitePawn, color: "white", type: "pawn" },
-  c2: { image: WhitePawn, color: "white", type: "pawn" },
-  d2: { image: WhitePawn, color: "white", type: "pawn" },
-  e2: { image: WhitePawn, color: "white", type: "pawn" },
-  f2: { image: WhitePawn, color: "white", type: "pawn" },
-  g2: { image: WhitePawn, color: "white", type: "pawn" },
-  h2: { image: WhitePawn, color: "white", type: "pawn" },
-  a7: { image: BlackPawn, color: "black", type: "pawn" },
-  b7: { image: BlackPawn, color: "black", type: "pawn" },
-  c7: { image: BlackPawn, color: "black", type: "pawn" },
-  d7: { image: BlackPawn, color: "black", type: "pawn" },
-  e7: { image: BlackPawn, color: "black", type: "pawn" },
-  f7: { image: BlackPawn, color: "black", type: "pawn" },
-  g7: { image: BlackPawn, color: "black", type: "pawn" },
-  h7: { image: BlackPawn, color: "black", type: "pawn" },
-  a8: { image: BlackRook, color: "black", type: "rook", hasMoved: false },
-  b8: { image: BlackKnight, color: "black", type: "knight" },
-  c8: { image: BlackBishop, color: "black", type: "bishop" },
-  d8: { image: BlackQueen, color: "black", type: "queen" },
-  e8: { image: BlackKing, color: "black", type: "king", hasMoved: false },
-  f8: { image: BlackBishop, color: "black", type: "bishop" },
-  g8: { image: BlackKnight, color: "black", type: "knight" },
-  h8: { image: BlackRook, color: "black", type: "rook", hasMoved: false }
+  WhiteRook: { image: WhiteRook, color: "white", type: "rook" },
+  WhiteKnight: { image: WhiteKnight, color: "white", type: "knight" },
+  WhiteBishop: { image: WhiteBishop, color: "white", type: "bishop" },
+  WhiteQueen: { image: WhiteQueen, color: "white", type: "queen" },
+  WhiteKing: { image: WhiteKing, color: "white", type: "king" },
+  WhitePawn: { image: WhitePawn, color: "white", type: "pawn" },
+  BlackRook: { image: BlackRook, color: "black", type: "rook" },
+  BlackKnight: { image: BlackKnight, color: "black", type: "knight" },
+  BlackBishop: { image: BlackBishop, color: "black", type: "bishop" },
+  BlackQueen: { image: BlackQueen, color: "black", type: "queen" },
+  BlackKing: { image: BlackKing, color: "black", type: "king" },
+  BlackPawn: { image: BlackPawn, color: "black", type: "pawn" }
 };
 
-/* 
-Mapping color to square, with A1 being black square as per standard chess board
-*/
+export const createPieceMapper = (boardState) => {
+  const piecePositions = {};
+  for (const [pieceType, pieces] of Object.entries(boardState)) {
+    if (Array.isArray(pieces)) {
+      pieces.forEach(({ position, hasMoved }) => {
+        piecePositions[position] = {
+          ...pieceMapper[pieceType],
+          ...(hasMoved !== undefined && { hasMoved })
+        };
+      });
+    } else {
+      const { position, hasMoved } = pieces;
+      piecePositions[position] = {
+        ...pieceMapper[pieceType],
+        ...(hasMoved !== undefined && { hasMoved })
+      };
+    }
+  }
+  return piecePositions;
+};
 
 export function assignSquareColors(board) {
   return board.map((row, rowIndex) =>
@@ -65,11 +62,6 @@ export function assignSquareColors(board) {
   );
 }
 
-/* 
-Mapping pieces to squares
-*/
-
-// In boardMapper.js
 export function initializePieces(board, pieceMapper, boardState) {
   return board.map((row) =>
     row.map((square) => ({
@@ -81,16 +73,13 @@ export function initializePieces(board, pieceMapper, boardState) {
   );
 }
 
-/* 
-Enabling drag on chess pieces
-*/
-
 export const handleDragStart = (event, square) => {
   event.dataTransfer.setData("text/plain", JSON.stringify(square));
 };
 
 export const convertBackendBoardToFrontend = (backendBoard, pieceMapper) => {
-  const positions = [
+  const piecePositions = createPieceMapper(backendBoard);
+  const board = [
     ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
     ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
     ["a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6"],
@@ -100,36 +89,12 @@ export const convertBackendBoardToFrontend = (backendBoard, pieceMapper) => {
     ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
     ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
   ];
-
-  return positions.map((row, rowIndex) =>
-    row.map((position, columnIndex) => {
-      const pieceData = backendBoard[position];
-      const piece = pieceData
-        ? { ...pieceMapper[position], ...pieceData }
-        : null;
-      return {
-        position,
-        color:
-          (rowIndex + columnIndex) % 2 === 0 ? "white-square" : "black-square",
-        piece: piece
-      };
-    })
+  const coloredBoard = assignSquareColors(board);
+  const frontendBoard = initializePieces(
+    coloredBoard,
+    pieceMapper,
+    piecePositions
   );
-};
 
-export const convertFrontendBoardToBackend = (frontendBoard) => {
-  const backendBoard = {};
-
-  frontendBoard.forEach((row) => {
-    row.forEach((square) => {
-      if (square.piece) {
-        backendBoard[square.position] = {
-          type: square.piece.type,
-          color: square.piece.color
-        };
-      }
-    });
-  });
-
-  return backendBoard;
+  return frontendBoard;
 };

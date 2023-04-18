@@ -15,17 +15,20 @@ import {
   legalPawnMove
 } from "./pieceMoves";
 
+import { convertFrontendBoardToBackend } from "./boardMapper";
 /* 
 handleDrop of piece logic
 */
 
-export const handleDrop = (
+export const handleDrop = async (
   event,
   destinationSquare,
   chessBoard,
   setChessBoard,
   currentTurn,
-  setCurrentTurn
+  setCurrentTurn,
+  updateGameState,
+  gameId
 ) => {
   /* 
 Enabling drop functionality so pieces can move
@@ -65,7 +68,7 @@ Legal move is defined in pieceMoves.js. Defines how pieces can move according to
     )
   ) {
     console.log("not legal move");
-   
+
     return;
   }
 
@@ -186,6 +189,8 @@ Updating board state
 
   setChessBoard(tempBoard);
 
+  // dropLogic.js
+
   /*
 Checking if opponent king is in check
 */
@@ -202,4 +207,6 @@ White plays first by default
 
   logPieceMove(sourceSquare, destinationSquare);
   setCurrentTurn(currentTurn === "white" ? "black" : "white");
+
+  return tempBoard;
 };

@@ -8,7 +8,7 @@ import {
 } from "./utilities/boardMapper";
 import { handleDrop } from "./utilities/dropLogic";
 import { useStore } from "../../zustand/store";
-import { convertFrontendBoardToBackend } from "./utilities/boardMapper";
+
 const Board = ({ gameId }) => {
   const board = [
     ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
@@ -20,10 +20,6 @@ const Board = ({ gameId }) => {
     ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
     ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
   ];
-  const [player1, setPlayer1] = useState(null);
-  const [player2, setPlayer2] = useState(null);
-  const boardState = useStore((state) => state.board);
-  const updateGameState = useStore((state) => state.updateGameState);
 
   const [currentTurn, setCurrentTurn] = useState("white");
   const fetchGameState = useStore((state) => state.fetchGameState);
@@ -33,24 +29,23 @@ const Board = ({ gameId }) => {
   const chessBoardWithPieces = initializePieces(coloredBoard, pieceMapper);
   const [chessBoard, setChessBoard] = useState(chessBoardWithPieces);
 
-  const [lastMove, setLastMove] = useState(null);
-
   useEffect(() => {
     async function fetchData() {
       const fetchedData = await fetchGameState(gameId);
       if (fetchedData) {
-        setChessBoard(
-          convertBackendBoardToFrontend(fetchedData.board, pieceMapper)
+        const frontendBoard = convertBackendBoardToFrontend(
+          fetchedData.board,
+          pieceMapper
         );
-
-        setPlayer1(fetchedData.player1);
-        setPlayer2(fetchedData.player2);
-
+        console.log("Frontend Board:", frontendBoard);
+        setChessBoard(frontendBoard);
         setIsGameDataFetched(true);
       }
     }
     fetchData();
   }, [fetchGameState, gameId]);
+
+  console.log("Chess Board State:", chessBoard);
 
   return (
     <div>
@@ -65,24 +60,15 @@ const Board = ({ gameId }) => {
                 className={`board-square ${square.color}`}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
-                  const moveResult = handleDrop(
+                  handleDrop(
                     event,
                     square,
                     chessBoard,
                     setChessBoard,
                     currentTurn,
                     setCurrentTurn,
-                    setLastMove
+                    gameId
                   );
-
-                  if (moveResult) {
-                    console.log("Move successful. Updating game state...");
-                    updateGameState(
-                      gameId,
-                      convertFrontendBoardToBackend(chessBoard),
-                      currentTurn === "white" ? player1 : player2
-                    );
-                  }
                 }}
               >
                 {square.piece && (
