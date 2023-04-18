@@ -69,11 +69,14 @@ export function assignSquareColors(board) {
 Mapping pieces to squares
 */
 
-export function initializePieces(board, pieceMapper) {
+// In boardMapper.js
+export function initializePieces(board, pieceMapper, boardState) {
   return board.map((row) =>
     row.map((square) => ({
       ...square,
-      piece: pieceMapper[square.position] || null
+      piece: boardState
+        ? boardState[square.position]
+        : pieceMapper[square.position] || null
     }))
   );
 }
@@ -87,13 +90,46 @@ export const handleDragStart = (event, square) => {
 };
 
 export const convertBackendBoardToFrontend = (backendBoard, pieceMapper) => {
-  const frontendBoard = {};
-  for (const position in backendBoard) {
-    const piece = backendBoard[position];
-    frontendBoard[position] = {
-      ...pieceMapper[piece],
-      hasMoved: piece.hasMoved || false
-    };
-  }
-  return frontendBoard;
+  const positions = [
+    ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
+    ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
+    ["a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6"],
+    ["a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5"],
+    ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"],
+    ["a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3"],
+    ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
+    ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
+  ];
+
+  return positions.map((row, rowIndex) =>
+    row.map((position, columnIndex) => {
+      const pieceData = backendBoard[position];
+      const piece = pieceData
+        ? { ...pieceMapper[position], ...pieceData }
+        : null;
+      return {
+        position,
+        color:
+          (rowIndex + columnIndex) % 2 === 0 ? "white-square" : "black-square",
+        piece: piece
+      };
+    })
+  );
+};
+
+export const convertFrontendBoardToBackend = (frontendBoard) => {
+  const backendBoard = {};
+
+  frontendBoard.forEach((row) => {
+    row.forEach((square) => {
+      if (square.piece) {
+        backendBoard[square.position] = {
+          type: square.piece.type,
+          color: square.piece.color
+        };
+      }
+    });
+  });
+
+  return backendBoard;
 };

@@ -24,8 +24,8 @@ export const handleDrop = (
   destinationSquare,
   chessBoard,
   setChessBoard,
-  isWhiteTurn,
-  setIsWhiteTurn
+  currentTurn,
+  setCurrentTurn
 ) => {
   /* 
 Enabling drop functionality so pieces can move
@@ -65,6 +65,7 @@ Legal move is defined in pieceMoves.js. Defines how pieces can move according to
     )
   ) {
     console.log("not legal move");
+   
     return;
   }
 
@@ -110,7 +111,8 @@ Checking if last move was 2 squares forward by a pawn
 Capturing pawn via en passant
 */
 
-      const capturedPawnRow = isWhiteTurn ? 5 : 4;
+      const capturedPawnRow = currentTurn === "white" ? 5 : 4;
+
       const capturedPawnColumn = destinationSquare.position[0];
       const capturedPawnPosition = `${capturedPawnColumn}${capturedPawnRow}`;
       console.log("En passant captured pawn position:", capturedPawnPosition);
@@ -199,5 +201,5 @@ White plays first by default
 */
 
   logPieceMove(sourceSquare, destinationSquare);
-  setIsWhiteTurn(!isWhiteTurn);
+  setCurrentTurn(currentTurn === "white" ? "black" : "white");
 };

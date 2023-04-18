@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   pieceMapper,
   assignSquareColors,
   initializePieces,
-  handleDragStart
+  handleDragStart,
+  convertBackendBoardToFrontend
 } from "./utilities/boardMapper";
 import { handleDrop } from "./utilities/dropLogic";
 import { useStore } from "../../zustand/store";
-
-const Board = () => {
+import { convertFrontendBoardToBackend } from "./utilities/boardMapper";
+const Board = ({ gameId }) => {
   const board = [
     ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
     ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
@@ -19,12 +20,37 @@ const Board = () => {
     ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
     ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
   ];
+  const [player1, setPlayer1] = useState(null);
+  const [player2, setPlayer2] = useState(null);
+  const boardState = useStore((state) => state.board);
+  const updateGameState = useStore((state) => state.updateGameState);
+
+  const [currentTurn, setCurrentTurn] = useState("white");
+  const fetchGameState = useStore((state) => state.fetchGameState);
+  const [isGameDataFetched, setIsGameDataFetched] = useState(false);
 
   const coloredBoard = assignSquareColors(board);
   const chessBoardWithPieces = initializePieces(coloredBoard, pieceMapper);
   const [chessBoard, setChessBoard] = useState(chessBoardWithPieces);
-  const [isWhiteTurn, setIsWhiteTurn] = useState(true);
+
   const [lastMove, setLastMove] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const fetchedData = await fetchGameState(gameId);
+      if (fetchedData) {
+        setChessBoard(
+          convertBackendBoardToFrontend(fetchedData.board, pieceMapper)
+        );
+
+        setPlayer1(fetchedData.player1);
+        setPlayer2(fetchedData.player2);
+
+        setIsGameDataFetched(true);
+      }
+    }
+    fetchData();
+  }, [fetchGameState, gameId]);
 
   return (
     <div>
@@ -38,17 +64,26 @@ const Board = () => {
                 id={square.position}
                 className={`board-square ${square.color}`}
                 onDragOver={(event) => event.preventDefault()}
-                onDrop={(event) =>
-                  handleDrop(
+                onDrop={(event) => {
+                  const moveResult = handleDrop(
                     event,
                     square,
                     chessBoard,
                     setChessBoard,
-                    isWhiteTurn,
-                    setIsWhiteTurn,
+                    currentTurn,
+                    setCurrentTurn,
                     setLastMove
-                  )
-                }
+                  );
+
+                  if (moveResult) {
+                    console.log("Move successful. Updating game state...");
+                    updateGameState(
+                      gameId,
+                      convertFrontendBoardToBackend(chessBoard),
+                      currentTurn === "white" ? player1 : player2
+                    );
+                  }
+                }}
               >
                 {square.piece && (
                   <img
@@ -56,8 +91,7 @@ const Board = () => {
                     alt=""
                     className={`chess-piece ${square.piece.color} ${square.piece.type}`}
                     draggable={
-                      (isWhiteTurn && square.piece.color === "white") ||
-                      (!isWhiteTurn && square.piece.color === "black")
+                      isGameDataFetched && currentTurn === square.piece.color
                     }
                     onDragStart={(event) => handleDragStart(event, square)}
                   />

@@ -135,8 +135,13 @@ export const fetchGameState = async (gameId) => {
     if (response.ok) {
       const data = await response.json();
       console.log("Fetched game state:", data);
-      const { boardState, currentPlayer } = data;
-      return { board: boardState, currentTurn: currentPlayer };
+      const { boardState, currentPlayer, player1, player2 } = data;
+      return {
+        board: boardState,
+        currentTurn: currentPlayer,
+        player1,
+        player2
+      };
     } else {
       throw new Error("Failed to fetch game state.");
     }
@@ -151,6 +156,11 @@ export const updateGameState = async (
   currentPlayer,
   set
 ) => {
+  console.log("updateGameState called with:", {
+    gameId,
+    boardState,
+    currentPlayer
+  });
   try {
     const response = await fetch(`http://localhost:3001/games/${gameId}`, {
       method: "PUT",

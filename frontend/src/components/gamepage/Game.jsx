@@ -7,7 +7,7 @@ const GamePage = () => {
   return (
     <div>
       <h1>Game Page</h1>
-      <Board />
+      <Board gameId={gameId} />
     </div>
   );
 };
