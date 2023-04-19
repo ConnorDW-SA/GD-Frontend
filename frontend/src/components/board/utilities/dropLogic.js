@@ -15,10 +15,12 @@ import {
   legalPawnMove
 } from "./pieceMoves";
 
-import { convertFrontendBoardToBackend } from "./boardMapper";
 /* 
 handleDrop of piece logic
 */
+export const handleDragStart = (event, square) => {
+  event.dataTransfer.setData("text/plain", JSON.stringify(square));
+};
 
 export const handleDrop = async (
   event,

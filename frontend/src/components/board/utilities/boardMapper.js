@@ -11,46 +11,16 @@ import WhiteKnight from "../../../assets/pieces/w-knight.png";
 import WhiteRook from "../../../assets/pieces/w-rook.png";
 import WhitePawn from "../../../assets/pieces/w-pawn.png";
 
-/* 
-Assigning pieces to their correct starting position, including hasMoved property which helps castling logic -
-Castling cannot occur if rook or king has moved (even if they go back to their starting position)
-*/
-
-export const pieceMapper = {
-  WhiteRook: { image: WhiteRook, color: "white", type: "rook" },
-  WhiteKnight: { image: WhiteKnight, color: "white", type: "knight" },
-  WhiteBishop: { image: WhiteBishop, color: "white", type: "bishop" },
-  WhiteQueen: { image: WhiteQueen, color: "white", type: "queen" },
-  WhiteKing: { image: WhiteKing, color: "white", type: "king" },
-  WhitePawn: { image: WhitePawn, color: "white", type: "pawn" },
-  BlackRook: { image: BlackRook, color: "black", type: "rook" },
-  BlackKnight: { image: BlackKnight, color: "black", type: "knight" },
-  BlackBishop: { image: BlackBishop, color: "black", type: "bishop" },
-  BlackQueen: { image: BlackQueen, color: "black", type: "queen" },
-  BlackKing: { image: BlackKing, color: "black", type: "king" },
-  BlackPawn: { image: BlackPawn, color: "black", type: "pawn" }
-};
-
-export const createPieceMapper = (boardState) => {
-  const piecePositions = {};
-  for (const [pieceType, pieces] of Object.entries(boardState)) {
-    if (Array.isArray(pieces)) {
-      pieces.forEach(({ position, hasMoved }) => {
-        piecePositions[position] = {
-          ...pieceMapper[pieceType],
-          ...(hasMoved !== undefined && { hasMoved })
-        };
-      });
-    } else {
-      const { position, hasMoved } = pieces;
-      piecePositions[position] = {
-        ...pieceMapper[pieceType],
-        ...(hasMoved !== undefined && { hasMoved })
-      };
-    }
-  }
-  return piecePositions;
-};
+export const initialBoardState = [
+  ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
+  ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
+  ["a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6"],
+  ["a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5"],
+  ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"],
+  ["a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3"],
+  ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
+  ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
+];
 
 export function assignSquareColors(board) {
   return board.map((row, rowIndex) =>
@@ -62,39 +32,65 @@ export function assignSquareColors(board) {
   );
 }
 
-export function initializePieces(board, pieceMapper, boardState) {
-  return board.map((row) =>
-    row.map((square) => ({
-      ...square,
-      piece: boardState
-        ? boardState[square.position]
-        : pieceMapper[square.position] || null
-    }))
-  );
-}
-
-export const handleDragStart = (event, square) => {
-  event.dataTransfer.setData("text/plain", JSON.stringify(square));
-};
-
-export const convertBackendBoardToFrontend = (backendBoard, pieceMapper) => {
-  const piecePositions = createPieceMapper(backendBoard);
-  const board = [
-    ["a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"],
-    ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"],
-    ["a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6"],
-    ["a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5"],
-    ["a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4"],
-    ["a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3"],
-    ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"],
-    ["a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"]
+export function mapPiecesToBoard(gameState, board) {
+  const pieceTypes = [
+    "whitePawns",
+    "whiteRooks",
+    "whiteKnights",
+    "whiteBishops",
+    "whiteQueen",
+    "whiteKing",
+    "blackPawns",
+    "blackRooks",
+    "blackKnights",
+    "blackBishops",
+    "blackQueen",
+    "blackKing"
   ];
-  const coloredBoard = assignSquareColors(board);
-  const frontendBoard = initializePieces(
-    coloredBoard,
-    pieceMapper,
-    piecePositions
-  );
 
-  return frontendBoard;
-};
+  const pieceImages = {
+    whiteKing: WhiteKing,
+    whiteQueen: WhiteQueen,
+    whiteBishops: WhiteBishop,
+    whiteKnights: WhiteKnight,
+    whiteRooks: WhiteRook,
+    whitePawns: WhitePawn,
+    blackKing: BlackKing,
+    blackQueen: BlackQueen,
+    blackBishops: BlackBishop,
+    blackKnights: BlackKnight,
+    blackRooks: BlackRook,
+    blackPawns: BlackPawn
+  };
+
+  const updatedBoard = JSON.parse(JSON.stringify(board));
+
+  pieceTypes.forEach((type) => {
+    if (gameState.boardState[type]) {
+      gameState.boardState[type].forEach((piece) => {
+        const pieceColor = type.slice(0, 5);
+        const pieceType = type.slice(5).toLowerCase();
+        const image = pieceImages[type];
+
+        const row = 8 - parseInt(piece.position[1]);
+        const col = piece.position.charCodeAt(0) - "a".charCodeAt(0);
+        const hasMoved =
+          pieceType === "king" || pieceType === "rook"
+            ? piece.hasMoved || false
+            : undefined;
+        updatedBoard[row][col] = {
+          ...updatedBoard[row][col],
+          piece: {
+            color: pieceColor,
+            type: pieceType,
+            image,
+            hasMoved,
+            position: piece.position
+          }
+        };
+      });
+    }
+  });
+
+  return updatedBoard;
+}

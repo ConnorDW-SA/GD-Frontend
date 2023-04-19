@@ -137,7 +137,7 @@ export const fetchGameState = async (gameId) => {
       console.log("Fetched game state:", data);
       const { boardState, currentPlayer, player1, player2 } = data;
       return {
-        board: boardState,
+        boardState: boardState,
         currentTurn: currentPlayer,
         player1,
         player2
