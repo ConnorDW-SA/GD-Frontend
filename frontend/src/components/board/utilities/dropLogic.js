@@ -51,7 +51,8 @@ Preventing turn being skipped if piece is dropped back on original square
   /* 
 Preventing pieces taking friendly pieces
 */
-
+  console.log("sourceSquare:", sourceSquare);
+  console.log("destinationSquare:", destinationSquare);
   if (isSameColorPiece(sourceSquare, destinationSquare)) {
     console.log("Same color piece");
     return;
@@ -206,9 +207,45 @@ Checking if opponent king is in check
 Storing last piece move (moveHelpers.js function), to enable standard chess notation, then setting turn to other player
 White plays first by default
 */
+  const getPieceColorAndType = (pieceImg) => {
+    const imgClass = pieceImg.getAttribute("class");
+    const colorMatch = imgClass.match(/(white|black)/);
+    const color = colorMatch ? colorMatch[0] : "";
+    const typeMatch = imgClass.match(/(pawn|rook|knight|bishop|queen|king)/);
+    const type = typeMatch ? typeMatch[0] : "";
 
-  logPieceMove(sourceSquare, destinationSquare);
+    return { color, type };
+  };
+
+  const formatBoardState = (board) => {
+    return board.flatMap((row) =>
+      row
+        .filter((square) => {
+          const squareElement = document.getElementById(square.position);
+          return squareElement.querySelector("img.chess-piece") !== null;
+        })
+        .map((square) => {
+          const squareElement = document.getElementById(square.position);
+          const pieceImg = squareElement.querySelector("img.chess-piece");
+          const { color, type } = getPieceColorAndType(pieceImg);
+          if (!color || !type) {
+            console.error(
+              `Error: missing color or type for ${square.position}`
+            );
+            return null;
+          }
+          return {
+            position: square.position,
+            color,
+            type
+          };
+        })
+        .filter((square) => square !== null)
+    );
+  };
+
   setCurrentTurn(currentTurn === "white" ? "black" : "white");
-
+  const formattedBoardState = formatBoardState(chessBoard);
+  await updateGameState(gameId, formattedBoardState, currentTurn);
   return tempBoard;
 };

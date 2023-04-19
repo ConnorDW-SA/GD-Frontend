@@ -33,64 +33,39 @@ export function assignSquareColors(board) {
 }
 
 export function mapPiecesToBoard(gameState, board) {
-  const pieceTypes = [
-    "whitePawns",
-    "whiteRooks",
-    "whiteKnights",
-    "whiteBishops",
-    "whiteQueen",
-    "whiteKing",
-    "blackPawns",
-    "blackRooks",
-    "blackKnights",
-    "blackBishops",
-    "blackQueen",
-    "blackKing"
-  ];
-
   const pieceImages = {
-    whiteKing: WhiteKing,
-    whiteQueen: WhiteQueen,
-    whiteBishops: WhiteBishop,
-    whiteKnights: WhiteKnight,
-    whiteRooks: WhiteRook,
-    whitePawns: WhitePawn,
-    blackKing: BlackKing,
-    blackQueen: BlackQueen,
-    blackBishops: BlackBishop,
-    blackKnights: BlackKnight,
-    blackRooks: BlackRook,
-    blackPawns: BlackPawn
+    black: {
+      king: BlackKing,
+      queen: BlackQueen,
+      bishop: BlackBishop,
+      knight: BlackKnight,
+      rook: BlackRook,
+      pawn: BlackPawn
+    },
+    white: {
+      king: WhiteKing,
+      queen: WhiteQueen,
+      bishop: WhiteBishop,
+      knight: WhiteKnight,
+      rook: WhiteRook,
+      pawn: WhitePawn
+    }
   };
 
-  const updatedBoard = JSON.parse(JSON.stringify(board));
-
-  pieceTypes.forEach((type) => {
-    if (gameState.boardState[type]) {
-      gameState.boardState[type].forEach((piece) => {
-        const pieceColor = type.slice(0, 5);
-        const pieceType = type.slice(5).toLowerCase();
-        const image = pieceImages[type];
-
-        const row = 8 - parseInt(piece.position[1]);
-        const col = piece.position.charCodeAt(0) - "a".charCodeAt(0);
-        const hasMoved =
-          pieceType === "king" || pieceType === "rook"
-            ? piece.hasMoved || false
-            : undefined;
-        updatedBoard[row][col] = {
-          ...updatedBoard[row][col],
+  return board.map((row) =>
+    row.map((square) => {
+      const piece = gameState.find((p) => p.position === square.position);
+      if (piece) {
+        return {
+          ...square,
           piece: {
-            color: pieceColor,
-            type: pieceType,
-            image,
-            hasMoved,
-            position: piece.position
+            ...piece,
+            image: pieceImages[piece.color][piece.type]
           }
         };
-      });
-    }
-  });
-
-  return updatedBoard;
+      } else {
+        return square;
+      }
+    })
+  );
 }

@@ -170,7 +170,7 @@ export const updateGameState = async (
       },
       body: JSON.stringify({
         boardState,
-        currentPlayer
+        currentPlayer: currentPlayer
       })
     });
 

@@ -38,7 +38,7 @@ Helper function for stopping pieces taking their own pieces
 */
 
 export const isSameColorPiece = (sourceSquare, destinationSquare) => {
-  if (destinationSquare.piece === null) {
+  if (!destinationSquare.piece) {
     return false;
   }
   return sourceSquare.piece.color === destinationSquare.piece.color;

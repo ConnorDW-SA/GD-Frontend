@@ -10,16 +10,16 @@ import { useStore } from "../../zustand/store";
 const Board = ({ gameId }) => {
   const [currentTurn, setCurrentTurn] = useState("white");
   const fetchGameState = useStore((state) => state.fetchGameState);
-
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
+  const updateGameState = useStore((state) => state.updateGameState);
 
   useEffect(() => {
     async function fetchData() {
       const fetchedData = await fetchGameState(gameId);
       if (fetchedData) {
         const updatedBoard = mapPiecesToBoard(
-          fetchedData,
+          fetchedData.boardState,
           assignSquareColors(initialBoardState)
         );
         setChessBoard(updatedBoard);
@@ -27,8 +27,6 @@ const Board = ({ gameId }) => {
     }
     fetchData();
   }, [fetchGameState, gameId]);
-
-  // ...rest of the code
 
   return (
     <div>
@@ -50,6 +48,7 @@ const Board = ({ gameId }) => {
                     setChessBoard,
                     currentTurn,
                     setCurrentTurn,
+                    updateGameState,
                     gameId
                   );
                 }}
