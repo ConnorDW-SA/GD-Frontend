@@ -1,45 +1,91 @@
 /* ---------------- App ---------------- */
 
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+
+@font-face {
+  font-family: "GilmerBold";
+  src: url("./assets/GilmerFont/GilmerBold.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GilmerHeavy";
+  src: url("./assets/GilmerFont/GilmerHeavy.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GilmerLight";
+  src: url("./assets/GilmerFont/GilmerLight.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GilmerMedium";
+  src: url("./assets/GilmerFont/GilmerMedium.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GilmerOutline";
+  src: url("./assets/GilmerFont/GilmerOutline.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GilmerRegular";
+  src: url("./assets/GilmerFont/GilmerRegular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 .App {
   text-align: center;
+  font-family: "Open Sans";
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+/* ---------------- Navbar ---------------- */
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.logo {
+  height: 10vh;
+  width: 18vw;
 }
 
 /* ---------------- Mainpage ---------------- */
+
+.main-section-one {
+  background-image: url(./assets/pics/login.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+}
+
+.test {
+  animation: fadeInTitle 2.5s ease;
+  color: white;
+}
+
+@keyframes fadeInTitle {
+  from {
+    opacity: 0;
+    transform: translateY(-15%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------- Board ---------------- */
 
 .chess-piece {
   width: 100%;
@@ -58,42 +104,4 @@
 
 .white-square {
   background-color: #f0d9b5;
-}
-
-/* ---------------- Board ---------------- */
-
-.board {
-  height: auto;
-  width: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  align-content: center;
-}
-
-.row {
-  display: flex;
-}
-
-.column-letters {
-  display: flex;
-  justify-content: space-between;
-  width: 32%;
-}
-
-.column-letter {
-  width: 12.5%;
-  text-align: center;
-}
-
-.square {
-  width: 60px;
-  height: 60px;
-}
-
-.white {
-}
-
-.black {
 }
