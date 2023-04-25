@@ -22,7 +22,11 @@ export const loginRegisterUser = async (
       localStorage.setItem("accessToken", data.accessToken);
 
       if (data.user) {
-        get().setUser({ ...data.user, username: data.user.username });
+        get().setUser({
+          ...data.user,
+          username: data.user.username
+          // id: data.user._id
+        });
         get().setLoginState(true);
       } else {
         console.error("User object not found in response data");

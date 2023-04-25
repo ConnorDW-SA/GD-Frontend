@@ -9,10 +9,10 @@ import { useStore } from "../../zustand/store";
 
 const Board = ({ gameId }) => {
   const [loggedInUserColor, setLoggedInUserColor] = useState(null);
+  const [gameData, setGameData] = useState(null);
 
-  const currentUser = useStore((state) => state.user._id);
-  console.log(currentUser);
-  const [currentTurn, setCurrentTurn] = useState("white");
+  const currentUser = useStore((state) => state.user);
+  const currentUserId = useStore((state) => state.user._id);
   const fetchGameState = useStore((state) => state.fetchGameState);
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
@@ -27,16 +27,21 @@ const Board = ({ gameId }) => {
           assignSquareColors(initialBoardState)
         );
         setChessBoard(updatedBoard);
-
-        if (fetchedData.player1 === currentUser) {
-          setLoggedInUserColor("white");
-        } else if (fetchedData.player2 === currentUser) {
-          setLoggedInUserColor("black");
-        }
+        setGameData(fetchedData);
       }
     }
     fetchData();
   }, [gameId]);
+
+  useEffect(() => {
+    if (gameData) {
+      if (gameData.player1 === currentUserId) {
+        setLoggedInUserColor("white");
+      } else if (gameData.player2 === currentUserId) {
+        setLoggedInUserColor("black");
+      }
+    }
+  }, [gameData, currentUserId]);
 
   return (
     <div>
@@ -56,8 +61,7 @@ const Board = ({ gameId }) => {
                     square,
                     chessBoard,
                     setChessBoard,
-                    currentTurn,
-                    setCurrentTurn,
+                    gameData && gameData.currentTurn, // Changed from gameData.currentPlayer
                     updateGameState,
                     gameId
                   );
@@ -70,8 +74,9 @@ const Board = ({ gameId }) => {
                     className={`chess-piece ${square.piece.color} ${square.piece.type}`}
                     draggable={
                       gameId &&
-                      currentTurn === square.piece.color &&
-                      loggedInUserColor === currentTurn
+                      gameData &&
+                      currentUserId === gameData.currentTurn && // Changed from gameData.currentPlayer
+                      square.piece.color === loggedInUserColor
                     }
                     onDragStart={(event) => handleDragStart(event, square)}
                   />
