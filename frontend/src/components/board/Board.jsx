@@ -8,6 +8,10 @@ import { handleDrop, handleDragStart } from "./utilities/dropLogic";
 import { useStore } from "../../zustand/store";
 
 const Board = ({ gameId }) => {
+  const [loggedInUserColor, setLoggedInUserColor] = useState(null);
+
+  const currentUser = useStore((state) => state.user._id);
+  console.log(currentUser);
   const [currentTurn, setCurrentTurn] = useState("white");
   const fetchGameState = useStore((state) => state.fetchGameState);
   const coloredBoard = assignSquareColors(initialBoardState);
@@ -23,10 +27,16 @@ const Board = ({ gameId }) => {
           assignSquareColors(initialBoardState)
         );
         setChessBoard(updatedBoard);
+
+        if (fetchedData.player1 === currentUser) {
+          setLoggedInUserColor("white");
+        } else if (fetchedData.player2 === currentUser) {
+          setLoggedInUserColor("black");
+        }
       }
     }
     fetchData();
-  }, [fetchGameState, gameId]);
+  }, [gameId]);
 
   return (
     <div>
@@ -58,7 +68,11 @@ const Board = ({ gameId }) => {
                     src={square.piece.image}
                     alt=""
                     className={`chess-piece ${square.piece.color} ${square.piece.type}`}
-                    draggable={gameId && currentTurn === square.piece.color}
+                    draggable={
+                      gameId &&
+                      currentTurn === square.piece.color &&
+                      loggedInUserColor === currentTurn
+                    }
                     onDragStart={(event) => handleDragStart(event, square)}
                   />
                 )}

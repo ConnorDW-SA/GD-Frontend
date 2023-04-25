@@ -8,7 +8,7 @@ const NavbarTop = () => {
           <img src="" alt="logo" className="logo"></img>
         </a>
       </div>
-      <nav classname="nav-link">Home</nav>
+      <nav className="nav-link">Home</nav>
     </nav>
   );
 };

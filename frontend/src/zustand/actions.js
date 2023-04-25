@@ -184,7 +184,7 @@ export const updateGameState = async (
       boardState: updatedBoardState,
       currentPlayer: updatedCurrentPlayer
     } = data;
-    set({ board: updatedBoardState, currentTurn: updatedCurrentPlayer });
+    set({ board: updatedBoardState, currentPlayer: updatedCurrentPlayer });
   } catch (error) {
     console.error("Error updating game state:", error.message);
   }

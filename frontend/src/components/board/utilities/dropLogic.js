@@ -22,7 +22,7 @@ export const handleDragStart = (event, square) => {
   event.dataTransfer.setData("text/plain", JSON.stringify(square));
 };
 
-export const handleDrop = async (
+export async function handleDrop(
   event,
   destinationSquare,
   chessBoard,
@@ -31,7 +31,7 @@ export const handleDrop = async (
   setCurrentTurn,
   updateGameState,
   gameId
-) => {
+) {
   /* 
 Enabling drop functionality so pieces can move
 */
@@ -190,7 +190,7 @@ Move the rook after successful castle
 Updating board state
 */
 
-  setChessBoard(tempBoard);
+  await setChessBoard(tempBoard);
 
   // dropLogic.js
 
@@ -245,7 +245,7 @@ White plays first by default
   };
 
   setCurrentTurn(currentTurn === "white" ? "black" : "white");
-  const formattedBoardState = formatBoardState(chessBoard);
+  const formattedBoardState = formatBoardState(tempBoard);
   await updateGameState(gameId, formattedBoardState, currentTurn);
   return tempBoard;
-};
+}
