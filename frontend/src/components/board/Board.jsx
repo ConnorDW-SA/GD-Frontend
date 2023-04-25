@@ -61,7 +61,15 @@ const Board = ({ gameId }) => {
                     square,
                     chessBoard,
                     setChessBoard,
-                    gameData && gameData.currentTurn, // Changed from gameData.currentPlayer
+                    gameData && gameData.currentTurn,
+                    () => {
+                      // This function sets the current turn to the next player.
+                      setGameData({
+                        ...gameData,
+                        currentTurn:
+                          gameData.currentTurn === "white" ? "black" : "white"
+                      });
+                    },
                     updateGameState,
                     gameId
                   );
