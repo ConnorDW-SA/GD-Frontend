@@ -252,7 +252,7 @@ White plays first by default
     gameId,
     moveInfo: { boardState: formattedBoardState, currentTurn }
   });
-
+  console.log(currentTurn);
   socket.emit("update turn", currentTurn === "white" ? "black" : "white");
 
   return tempBoard;

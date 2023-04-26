@@ -51,7 +51,8 @@ const Board = ({ gameId, socket }) => {
         setChessBoard(updatedBoard);
         setGameData((prevGameData) => ({
           ...prevGameData,
-          currentTurn: moveInfo.currentTurn
+          currentTurn: moveInfo.currentTurn,
+          boardState: moveInfo.boardState
         }));
       });
     }
@@ -97,7 +98,7 @@ const Board = ({ gameId, socket }) => {
               >
                 {square.piece && (
                   <img
-                    key={`${square.piece.color}-${square.piece.type}-${gameData.currentTurn}`}
+                    key={`${square.piece.color}-${square.piece.type}`}
                     src={square.piece.image}
                     alt=""
                     className={`chess-piece ${square.piece.color} ${square.piece.type}`}
