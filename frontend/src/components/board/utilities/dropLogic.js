@@ -30,7 +30,8 @@ export async function handleDrop(
   currentTurn,
   setCurrentTurn,
   updateGameState,
-  gameId
+  gameId,
+  socket
 ) {
   /* 
 Enabling drop functionality so pieces can move
@@ -247,5 +248,12 @@ White plays first by default
   setCurrentTurn(currentTurn === "white" ? "black" : "white");
   const formattedBoardState = formatBoardState(tempBoard);
   await updateGameState(gameId, formattedBoardState, currentTurn);
+  socket.emit("player move", {
+    gameId,
+    moveInfo: { boardState: formattedBoardState, currentTurn }
+  });
+
+  socket.emit("update turn", currentTurn === "white" ? "black" : "white");
+
   return tempBoard;
 }

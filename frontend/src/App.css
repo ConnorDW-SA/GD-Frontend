@@ -105,3 +105,198 @@
 .white-square {
   background-color: #f0d9b5;
 }
+
+/* 
+OLD CSS
+
+/* ----------------------------- BOARD ------------------------ */
+
+/* .board {
+  height: auto;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.row {
+  display: flex;
+}
+
+.square {
+  width: 60px;
+  height: 60px;
+}
+
+.white {
+  background-color: #f0d9b5;
+}
+
+.black {
+  background-color: #b58863;
+} */
+
+/* ----------------------------- LOGIN------------------------ */
+
+/* .login-page {
+  background-image: url(./assets/pics/login.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+}
+
+.login-form {
+  width: 400px;
+  height: 650px;
+  margin: 0 auto;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-content: space-around;
+  align-items: center;
+  align-content: center;
+}
+
+.login-form:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: 0.5s;
+}
+
+.login-form:focus-within {
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: 0.5s;
+} */
+
+/* ----------------------------- Main ------------------------ */
+
+/* .main-page {
+  background-color: rgb(20, 20, 20);
+  width: 100vw !important;
+}
+
+.username-main {
+  color: white;
+  font-family: "GilmerMedium";
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+.main-page-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.friend-button {
+  border: 1px solid #800000 !important;
+  color: #800000 !important;
+}
+
+.friend-button:hover {
+  background-color: #800000 !important;
+  color: white !important;
+}
+
+.friend-button.disabled:hover {
+  background-color: transparent !important;
+  color: inherit !important;
+  cursor: default;
+}
+
+.wrapper-list-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  align-content: center;
+}
+
+.users-list-main {
+  color: #800000;
+  z-index: 1;
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+}
+/* ----------------------------- Navbar ------------------------ */
+/* .no-style-navbar-button {
+  all: unset !important;
+}
+.no-style-navbar-button:hover {
+  cursor: pointer !important;
+  background-color: rgba(255, 255, 255) !important;
+}
+
+.nav-logo {
+  font-family: "GilmerMedium";
+}
+
+a {
+  all: unset !important;
+}
+
+.navbar-links:hover {
+  cursor: pointer !important; */
+/* background-color: rgb(20, 20, 20) !important;
+  color: white !important; */
+/* } */
+
+/* .nav {
+  color: #800000;
+} */
+
+/* .blur-navbar {
+  position: relative;
+  z-index: 2;
+  background-color: rgb(255, 255, 255);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  position: fixed;
+  top: 0;
+  width: 100%;
+} */
+
+/* ----------------------------- Side Menu ------------------------ */
+
+/* .side-menu-content {
+  position: fixed;
+  left: -500px;
+  top: 0;
+  width: 500px;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #800000;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 20px;
+  transition: transform 0.5s;
+  font-size: 1.5rem !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.side-menu-content.show {
+  transform: translateX(500px);
+  width: 500px;
+}
+
+.side-menu-content.show a:hover {
+  background-color: rgb(20, 20, 20) !important;
+  cursor: pointer !important;
+  color: white !important;
+  width: 100% !important;
+}
+
+.side-menu {
+  color: #800000;
+  font-size: 1.5rem !important;
+}  */

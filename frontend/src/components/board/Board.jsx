@@ -7,11 +7,9 @@ import {
 import { handleDrop, handleDragStart } from "./utilities/dropLogic";
 import { useStore } from "../../zustand/store";
 
-const Board = ({ gameId }) => {
+const Board = ({ gameId, socket }) => {
   const [loggedInUserColor, setLoggedInUserColor] = useState(null);
   const [gameData, setGameData] = useState(null);
-
-  const currentUser = useStore((state) => state.user);
   const currentUserId = useStore((state) => state.user._id);
   const fetchGameState = useStore((state) => state.fetchGameState);
   const coloredBoard = assignSquareColors(initialBoardState);
@@ -43,6 +41,28 @@ const Board = ({ gameId }) => {
     }
   }, [gameData, currentUserId]);
 
+  useEffect(() => {
+    if (socket) {
+      socket.on("opponent move", (moveInfo) => {
+        const updatedBoard = mapPiecesToBoard(
+          moveInfo.boardState,
+          assignSquareColors(initialBoardState)
+        );
+        setChessBoard(updatedBoard);
+        setGameData((prevGameData) => ({
+          ...prevGameData,
+          currentTurn: moveInfo.currentTurn
+        }));
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("opponent move");
+      }
+    };
+  }, [socket]);
+
   return (
     <div>
       <h1>Chess Board</h1>
@@ -63,7 +83,6 @@ const Board = ({ gameId }) => {
                     setChessBoard,
                     gameData && gameData.currentTurn,
                     () => {
-                      // This function sets the current turn to the next player.
                       setGameData({
                         ...gameData,
                         currentTurn:
@@ -71,19 +90,21 @@ const Board = ({ gameId }) => {
                       });
                     },
                     updateGameState,
-                    gameId
+                    gameId,
+                    socket
                   );
                 }}
               >
                 {square.piece && (
                   <img
+                    key={`${square.piece.color}-${square.piece.type}-${gameData.currentTurn}`}
                     src={square.piece.image}
                     alt=""
                     className={`chess-piece ${square.piece.color} ${square.piece.type}`}
                     draggable={
                       gameId &&
                       gameData &&
-                      currentUserId === gameData.currentTurn && // Changed from gameData.currentPlayer
+                      currentUserId === gameData.currentTurn &&
                       square.piece.color === loggedInUserColor
                     }
                     onDragStart={(event) => handleDragStart(event, square)}
