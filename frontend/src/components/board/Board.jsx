@@ -43,17 +43,16 @@ const Board = ({ gameId, socket }) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on("opponent move", (moveInfo) => {
-        const updatedBoard = mapPiecesToBoard(
-          moveInfo.boardState,
-          assignSquareColors(initialBoardState)
-        );
-        setChessBoard(updatedBoard);
-        setGameData((prevGameData) => ({
-          ...prevGameData,
-          currentTurn: moveInfo.currentTurn,
-          boardState: moveInfo.boardState
-        }));
+      socket.on("opponent move", async (moveInfo) => {
+        const fetchedData = await fetchGameState(gameId);
+        if (fetchedData) {
+          const updatedBoard = mapPiecesToBoard(
+            fetchedData.boardState,
+            assignSquareColors(initialBoardState)
+          );
+          setChessBoard(updatedBoard);
+          setGameData(fetchedData);
+        }
       });
     }
 

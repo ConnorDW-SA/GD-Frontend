@@ -250,10 +250,20 @@ White plays first by default
   await updateGameState(gameId, formattedBoardState, currentTurn);
   socket.emit("player move", {
     gameId,
-    moveInfo: { boardState: formattedBoardState, currentTurn }
+    moveInfo: {
+      boardState: formattedBoardState,
+      currentPlayer: currentTurn === "white" ? "black" : "white",
+      currentTurn: currentTurn === "white" ? "black" : "white"
+    }
   });
-  console.log(currentTurn);
-  socket.emit("update turn", currentTurn === "white" ? "black" : "white");
+
+  console.log("Emitted move:", {
+    gameId,
+    moveInfo: {
+      boardState: formattedBoardState,
+      currentTurn: currentTurn === "white" ? "black" : "white"
+    }
+  });
 
   return tempBoard;
 }
