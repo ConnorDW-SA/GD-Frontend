@@ -52,8 +52,7 @@ Preventing turn being skipped if piece is dropped back on original square
   /* 
 Preventing pieces taking friendly pieces
 */
-  console.log("sourceSquare:", sourceSquare);
-  console.log("destinationSquare:", destinationSquare);
+
   if (isSameColorPiece(sourceSquare, destinationSquare)) {
     console.log("Same color piece");
     return;
@@ -264,6 +263,7 @@ White plays first by default
       currentTurn: currentTurn === "white" ? "black" : "white"
     }
   });
-
-  return tempBoard;
+  console.log("sourceSquare:", sourceSquare);
+  console.log("destinationSquare:", destinationSquare);
+  return { newBoard: tempBoard, move: { sourceSquare, destinationSquare } };
 }

@@ -6,6 +6,7 @@ import {
 } from "./utilities/boardMapper";
 import { handleDrop, handleDragStart } from "./utilities/dropLogic";
 import { useStore } from "../../zustand/store";
+import moveSound from "../../assets/move.mp3";
 
 const Board = ({ gameId, socket }) => {
   const [loggedInUserColor, setLoggedInUserColor] = useState(null);
@@ -15,6 +16,10 @@ const Board = ({ gameId, socket }) => {
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
   const updateGameState = useStore((state) => state.updateGameState);
+  const playMoveSound = () => {
+    const audio = new Audio(moveSound);
+    audio.play();
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -76,6 +81,7 @@ const Board = ({ gameId, socket }) => {
                 className={`board-square ${square.color}`}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
+                  playMoveSound();
                   handleDrop(
                     event,
                     square,
