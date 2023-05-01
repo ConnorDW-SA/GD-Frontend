@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useStore } from "../../zustand/store";
 import { useNavigate } from "react-router-dom";
-import NavbarTop from "../navbars/NavTop";
+import Navbar from "../navbars/Navbar";
 
 const HomePage = () => {
   const logState = useStore((state) => state.logState);
@@ -33,7 +33,7 @@ const HomePage = () => {
 
   return (
     <div className="main-section-one">
-      <NavbarTop />
+      <Navbar />
 
       <div className="">
         <h2 className="test">Welcome {currentUser.username}</h2>
