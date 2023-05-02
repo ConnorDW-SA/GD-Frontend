@@ -6,7 +6,7 @@ const NavbarHeader = ({ toggleSideMenu }) => {
   return (
     <div className="d-flex">
       <div className="side-menu mr-4" onClick={toggleSideMenu}>
-        <a>
+        <a className="onclick-side">
           <FontAwesomeIcon icon={faBars} />
         </a>
       </div>

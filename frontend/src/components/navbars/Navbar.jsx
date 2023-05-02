@@ -29,7 +29,7 @@ export default function MyNavbar() {
   }, [sideMenuOpen]);
 
   return (
-    <Navbar className="navbar">
+    <Navbar className="navbar p-5">
       <div className="navbar text-white d-flex justify-content-between w-100">
         <NavbarHeader toggleSideMenu={toggleSideMenu} />
         <NavbarLinks />

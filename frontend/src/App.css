@@ -60,8 +60,11 @@
 /* ---------------- Mainpage ---------------- */
 
 .main-section-one {
-  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-
+  background-image: url(./assets/pics/main.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100vw;
   height: 100vh;
 }
 
@@ -137,7 +140,7 @@ OLD CSS
 
 /* ----------------------------- LOGIN------------------------ */
 
-/* .login-page {
+.login-page {
   background-image: url(./assets/pics/login.jpg);
   background-size: cover;
   background-position: center;
@@ -168,7 +171,7 @@ OLD CSS
 .login-form:focus-within {
   background-color: rgba(0, 0, 0, 0.3);
   transition: 0.5s;
-} */
+}
 
 /* ----------------------------- Main ------------------------ */
 
@@ -229,7 +232,6 @@ OLD CSS
 }
 .no-style-navbar-button:hover {
   cursor: pointer !important;
-  background-color: rgba(255, 255, 255) !important;
 }
 
 .nav-logo {
@@ -283,6 +285,9 @@ a {
 .side-menu-content.show {
   transform: translateX(500px);
   width: 500px;
+}
+
+.onclick-side:hover {
 }
 
 .side-menu-content.show a:hover {

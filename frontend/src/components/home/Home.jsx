@@ -7,7 +7,7 @@ const HomePage = () => {
   const logState = useStore((state) => state.logState);
   const currentUser = useStore((state) => state.user);
   const users = useStore((state) => state.users);
-  const logout = useStore((state) => state.logout);
+
   const fetchUsers = useStore((state) => state.fetchUsers);
   const createGame = useStore((state) => state.createGame);
   const fetchUserGames = useStore((state) => state.fetchUserGames);
@@ -20,9 +20,6 @@ const HomePage = () => {
   };
 
   const navigate = useNavigate();
-  const handleLogout = () => {
-    logout(navigate);
-  };
 
   useEffect(() => {
     fetchUsers();
@@ -36,8 +33,7 @@ const HomePage = () => {
       <Navbar />
 
       <div className="">
-        <h2 className="test">Welcome {currentUser.username}</h2>
-        <button onClick={handleLogout}>Logout</button>
+        <h1 className="test text-dark">Welcome {currentUser.username}</h1>
       </div>
       <div className="">
         <div className="">
