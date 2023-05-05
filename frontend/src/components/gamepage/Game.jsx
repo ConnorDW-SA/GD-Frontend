@@ -23,6 +23,7 @@ const GamePage = () => {
         const player2 = allUsers.find(
           (user) => user._id === fetchedData.player2
         );
+
         setGameData({
           ...fetchedData,
           player1: {
@@ -46,6 +47,7 @@ const GamePage = () => {
       socket.disconnect();
     };
   }, [socket, gameId]);
+  console.log(gameData);
 
   return (
     <div>
@@ -59,6 +61,13 @@ const GamePage = () => {
         <Board gameId={gameId} socket={socket} />
         <div>
           <h1>Moves and alerts</h1>
+          {gameData &&
+            gameData.moveHistory &&
+            gameData.moveHistory.map((move, index) => (
+              <p key={index}>
+                {move.color} {move.piece} moved from {move.from} to {move.to}
+              </p>
+            ))}
         </div>
       </div>
     </div>

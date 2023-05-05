@@ -31,11 +31,9 @@ export async function handleDrop(
   setCurrentTurn,
   updateGameState,
   gameId,
-  socket
+  socket,
+  moveHistory
 ) {
-  /* 
-Enabling drop functionality so pieces can move
-*/
 
   event.preventDefault();
   const sourceSquare = JSON.parse(event.dataTransfer.getData("text/plain"));
@@ -246,13 +244,29 @@ White plays first by default
 
   setCurrentTurn(currentTurn === "white" ? "black" : "white");
   const formattedBoardState = formatBoardState(tempBoard);
-  await updateGameState(gameId, formattedBoardState, currentTurn);
+  const updatedMoveHistory = [
+    ...moveHistory,
+    {
+      from: sourceSquare.position,
+      to: destinationSquare.position,
+      piece: sourceSquare.piece.type,
+      color: sourceSquare.piece.color
+    }
+  ];
+
+  await updateGameState(
+    gameId,
+    formattedBoardState,
+    currentTurn,
+    updatedMoveHistory
+  );
   socket.emit("player move", {
     gameId,
     moveInfo: {
       boardState: formattedBoardState,
       currentPlayer: currentTurn === "white" ? "black" : "white",
-      currentTurn: currentTurn === "white" ? "black" : "white"
+      currentTurn: currentTurn === "white" ? "black" : "white",
+      moveHistory: updatedMoveHistory
     }
   });
 

@@ -33,8 +33,9 @@ export const useStore = create(
         setGames: (games) => set({ games }),
         fetchGameState: (gameId) => fetchGameState(gameId, set, get),
 
-        updateGameState: (gameId, boardState, currentPlayer) =>
-          updateGameState(gameId, boardState, currentPlayer, set),
+        updateGameState: (gameId, boardState, currentPlayer, moveHistory) =>
+          updateGameState(gameId, boardState, currentPlayer, moveHistory, set),
+
         setBoard: (board) => set({ board }),
         logState,
         logout: (navigate) => {

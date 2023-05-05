@@ -20,6 +20,7 @@ const Board = ({ gameId, socket }) => {
     const audio = new Audio(moveSound);
     audio.play();
   };
+  const set = useStore((state) => state.set);
 
   useEffect(() => {
     async function fetchData() {
@@ -97,7 +98,9 @@ const Board = ({ gameId, socket }) => {
                     },
                     updateGameState,
                     gameId,
-                    socket
+                    socket,
+                    (gameData && gameData.moveHistory) || [],
+                    set
                   );
                 }}
               >
