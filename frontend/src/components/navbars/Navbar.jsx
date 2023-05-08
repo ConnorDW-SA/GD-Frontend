@@ -1,40 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "react-bootstrap";
-import NavbarHeader from "./NavbarHeader";
-import NavbarLinks from "./NavbarLinks";
-import SideMenu from "./SideMenu";
+
+import { useStore } from "../../zustand/store";
+import { useNavigate } from "react-router-dom";
 
 export default function MyNavbar() {
-  const [sideMenuOpen, setSideMenuOpen] = useState(false);
-
-  const toggleSideMenu = () => {
-    setSideMenuOpen(!sideMenuOpen);
+  const logout = useStore((state) => state.logout);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout(navigate);
   };
-
-  const handleClickOutside = (event) => {
-    if (
-      sideMenuOpen &&
-      !event.target.closest(".side-menu") &&
-      !event.target.closest(".side-menu-content")
-    ) {
-      setSideMenuOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [sideMenuOpen]);
 
   return (
-    <Navbar className="navbar p-5">
-      <div className="navbar text-white d-flex justify-content-between w-100">
-        <NavbarHeader toggleSideMenu={toggleSideMenu} />
-        <NavbarLinks />
+    <Navbar>
+      <div className="navbar nav">
+        <a href="/rules">
+          <h5 className="nav navbar-links">Chess Rules</h5>
+        </a>
+        <a href="/contact">
+          <h5 className="nav navbar-links">Contact</h5>
+        </a>
+        <button className="no-style-navbar-button" onClick={handleLogout}>
+          <h5 className="nav navbar-links">Logout</h5>
+        </button>
       </div>
-      <SideMenu sideMenuOpen={sideMenuOpen} toggleSideMenu={toggleSideMenu} />
     </Navbar>
   );
 }
