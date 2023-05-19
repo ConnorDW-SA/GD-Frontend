@@ -105,7 +105,7 @@ export const createGame = async (player2, navigate, set) => {
 
 export const fetchUserGames = async (set, get) => {
   try {
-    const response = await fetch("http://localhost:3001/games/userGames", {
+    const response = await fetch("http://localhost:3003/games/userGames", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export const fetchUserGames = async (set, get) => {
 
 export const fetchGameState = async (gameId) => {
   try {
-    const response = await fetch(`http://localhost:3001/games/${gameId}`, {
+    const response = await fetch(`http://localhost:3003/games/${gameId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -169,7 +169,7 @@ export const updateGameState = async (
   });
   try {
     // Fetch the current game data
-    const gameResponse = await fetch(`http://localhost:3001/games/${gameId}`, {
+    const gameResponse = await fetch(`http://localhost:3003/games/${gameId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -186,7 +186,7 @@ export const updateGameState = async (
     // Combine the existing moveHistory with the new move
     const updatedMoveHistory = [...gameData.moveHistory, ...moveHistory];
 
-    const response = await fetch(`http://localhost:3001/games/${gameId}`, {
+    const response = await fetch(`http://localhost:3003/games/${gameId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

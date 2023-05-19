@@ -6,7 +6,7 @@ import { useStore } from "../../zustand/store";
 
 const GamePage = () => {
   const { gameId } = useParams();
-  const socket = io("http://localhost:3001");
+  const socket = io("http://localhost:3003");
   const [gameData, setGameData] = useState(null);
   const fetchGameState = useStore((state) => state.fetchGameState);
   const currentUser = useStore((state) => state.user);
