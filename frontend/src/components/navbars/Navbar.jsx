@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "react-bootstrap";
-
+import blackKnight from "../../assets/pieces/w-knight.png";
 import { useStore } from "../../zustand/store";
 import { useNavigate } from "react-router-dom";
 
 export default function MyNavbar() {
   const logout = useStore((state) => state.logout);
+
   const navigate = useNavigate();
   const handleLogout = () => {
     logout(navigate);
   };
-
   return (
-    <Navbar>
-      <div className="navbar nav">
+    <Navbar className="sticky-top navbar-navbar">
+      <div className="navbar nav d-flex justify-content-between align-items-center">
+        <div className="d-flex align-items-center">
+          <img className="logo-img" src={blackKnight} alt="logo" />
+          <h5 className="nav navbar-links ml-2">GD</h5>
+        </div>
         <a href="/rules">
           <h5 className="nav navbar-links">Chess Rules</h5>
         </a>

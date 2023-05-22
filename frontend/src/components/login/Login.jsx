@@ -7,6 +7,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const loginRegisterUser = useStore((state) => state.loginRegisterUser);
   const logState = useStore((state) => state.logState);
+
   logState();
   const switchForm = () => {
     setIsLogin(!isLogin);
@@ -42,13 +43,6 @@ const LoginPage = () => {
             placeholder="Email"
             required
           />
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
-            required
-          />
           {!isLogin && (
             <input
               type="text"
@@ -58,6 +52,13 @@ const LoginPage = () => {
               required
             />
           )}
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
 
           <button type="submit" className="btn btn-secondary">
             {isLogin ? "Login" : "Register"}

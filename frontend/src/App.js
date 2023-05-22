@@ -7,15 +7,15 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => (
-  <BrowserRouter>
-    <div className="App">
+  <div className="App">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/game/:gameId" element={<GamePage />} />
       </Routes>
-    </div>
-  </BrowserRouter>
+    </BrowserRouter>
+  </div>
 );
 
 export default App;

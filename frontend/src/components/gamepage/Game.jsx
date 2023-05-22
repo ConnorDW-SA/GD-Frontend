@@ -6,7 +6,7 @@ import { useStore } from "../../zustand/store";
 
 const GamePage = () => {
   const { gameId } = useParams();
-  const socket = io("http://localhost:3003");
+  const socket = io("http://localhost:3001");
   const [gameData, setGameData] = useState(null);
   const fetchGameState = useStore((state) => state.fetchGameState);
   const currentUser = useStore((state) => state.user);
@@ -16,6 +16,7 @@ const GamePage = () => {
   useEffect(() => {
     async function fetchData() {
       const fetchedData = await fetchGameState(gameId);
+      console.log("this is fetched data", fetchedData);
       if (fetchedData) {
         const player1 = allUsers.find(
           (user) => user._id === fetchedData.player1
@@ -38,7 +39,7 @@ const GamePage = () => {
       }
     }
     fetchData();
-  }, [gameId, allUsers]);
+  }, [gameId, allUsers, fetchGameState]);
 
   useEffect(() => {
     socket.emit("join game", gameId);
@@ -47,7 +48,6 @@ const GamePage = () => {
       socket.disconnect();
     };
   }, [socket, gameId]);
-  console.log(gameData);
 
   return (
     <div>

@@ -46,26 +46,26 @@
 }
 
 .App {
-  text-align: center;
-  font-family: "Open Sans";
+  font-family: "GilmerMedium";
+  background-color: #0e0e12;
+  margin: 0;
+  padding: 0;
 }
-
-/* ---------------- Navbar ---------------- */
-
-.logo {
-  height: 10vh;
-  width: 18vw;
-}
-
-/* ---------------- Mainpage ---------------- */
-/* ----------------------------- Main ------------------------ */
 
 /* ----------------------------- Navbar ------------------------ */
 .no-style-navbar-button {
   all: unset !important;
+  border: 1px solid #788ca0 !important;
+  padding: 10px !important;
+  border-radius: 10px !important;
 }
 .no-style-navbar-button:hover {
   cursor: pointer !important;
+  animation: hoverInColorBorder 1.5s ease;
+}
+.logo-img {
+  height: 50px;
+  width: 50px;
 }
 
 a {
@@ -74,32 +74,75 @@ a {
 
 .navbar-links:hover {
   cursor: pointer !important;
-  color: #34e7e4;
+  animation: hoverInColor 1.5s ease;
 }
-
+@keyframes hoverInColor {
+  from {
+    color: #788ca0;
+  }
+  to {
+    color: #34e7e4;
+  }
+}
 .nav {
   color: #788ca0;
 }
 
-.main-section-one {
-  background-color: #0e0e12;
+.navbar {
+  margin: auto;
+  justify-content: space-between;
+  width: 70%;
 }
+
+.navbar-navbar {
+  background-color: #0e0e12;
+  width: 100%;
+}
+/* ----------------------------- Main ------------------------ */
 
 .test {
   animation: fadeInTitle 2.5s ease;
-  color: white;
+  color: #ff2bc1;
 }
 
 @keyframes fadeInTitle {
   from {
     opacity: 0;
-    transform: translateY(-15%);
+    transform: translateY(-5%);
   }
 
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.section-one,
+.section-two {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 500;
+}
+
+.images-box {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.background-image {
+  max-width: 40%;
+  pointer-events: none;
 }
 
 /* ---------------- Board ---------------- */

@@ -23,12 +23,16 @@ export const useStore = create(
         board: null,
         currentTurn: "white",
         setUser: (user) => set({ user }),
-        setLoginState: (isLoggedIn) => set({ isLoggedIn }),
+        setLoginState: (isLoggedIn) => set({ isLoggedIn: true }),
         loginRegisterUser: (email, password, username) =>
           loginRegisterUser(email, password, username, get, set),
         setUsers: (users) => set({ users }),
         fetchUsers: () => fetchUsers(set, get),
-        createGame: (player2, navigate) => createGame(player2, navigate, set),
+        createGame: async (player2) => {
+          const gameId = await createGame(player2, set);
+          return gameId;
+        },
+
         fetchUserGames: () => fetchUserGames(set, get),
         setGames: (games) => set({ games }),
         fetchGameState: (gameId) => fetchGameState(gameId, set, get),
