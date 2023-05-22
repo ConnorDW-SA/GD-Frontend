@@ -57,7 +57,7 @@ const HomePage = () => {
         <div className="section-two">
           <div className="half-section d-flex justify-content-between w-50">
             <div className="half-section-one">
-              <h2>Start a new game</h2>
+              <h2 className="color-pink">Start a new game</h2>
               {users && users.length > 0 ? (
                 users.map((user) => (
                   <div
@@ -66,7 +66,7 @@ const HomePage = () => {
                   >
                     <span className="mt-2">{user.username}</span>
                     <button
-                      className="btn btn-warning"
+                      className="btn btn-dark"
                       onClick={async () => {
                         const gameId = await createGame(user._id);
                         navigate(`/game/${gameId}`);
@@ -81,7 +81,7 @@ const HomePage = () => {
               )}
             </div>{" "}
             <div className="half-section-two">
-              <h2>Continue where you left off!</h2>
+              <h2 className="color-pink">Continue where you left off!</h2>
               {games && games.length > 0 ? (
                 games.map((game) => (
                   <div
@@ -100,7 +100,7 @@ const HomePage = () => {
                   </div>
                 ))
               ) : (
-                <h1>No current games</h1>
+                <h3>No current games</h3>
               )}
             </div>
           </div>

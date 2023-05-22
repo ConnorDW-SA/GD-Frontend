@@ -3,43 +3,33 @@ import { useParams } from "react-router-dom";
 import Board from "../board/Board";
 import { io } from "socket.io-client";
 import { useStore } from "../../zustand/store";
-
+import MyNavbar from "../navbars/Navbar";
 const GamePage = () => {
   const { gameId } = useParams();
   const socket = io("http://localhost:3001");
   const [gameData, setGameData] = useState(null);
   const fetchGameState = useStore((state) => state.fetchGameState);
-  const currentUser = useStore((state) => state.user);
-  const users = useStore((state) => state.users);
-  const allUsers = useMemo(() => [currentUser, ...users], [currentUser, users]);
 
   useEffect(() => {
     async function fetchData() {
       const fetchedData = await fetchGameState(gameId);
       console.log("this is fetched data", fetchedData);
       if (fetchedData) {
-        const player1 = allUsers.find(
-          (user) => user._id === fetchedData.player1
-        );
-        const player2 = allUsers.find(
-          (user) => user._id === fetchedData.player2
-        );
-
         setGameData({
           ...fetchedData,
           player1: {
             id: fetchedData.player1,
-            name: player1.username
+            name: fetchedData.player1.username
           },
           player2: {
             id: fetchedData.player2,
-            name: player2.username
+            name: fetchedData.player2.username
           }
         });
       }
     }
     fetchData();
-  }, [gameId, allUsers, fetchGameState]);
+  }, [gameId, fetchGameState]);
 
   useEffect(() => {
     socket.emit("join game", gameId);
@@ -51,24 +41,25 @@ const GamePage = () => {
 
   return (
     <div>
-      <div className="d-flex justify-content-between">
-        <h1>
-          {gameData &&
-            gameData.player1 &&
-            gameData.player2 &&
-            `${gameData.player1.name} vs ${gameData.player2.name}`}
-        </h1>
+      <MyNavbar />
+      <h1 className="text-center color-pink my-5">
+        {gameData &&
+          gameData.player1 &&
+          gameData.player2 &&
+          `${gameData.player1.name} vs ${gameData.player2.name}`}
+      </h1>
+      <div className="d-flex justify-content-around board-div m-auto pt-5">
         <Board gameId={gameId} socket={socket} />
-        <div>
-          <h1>Moves and alerts</h1>
+        {/* <div style={{ maxHeight: "500px", overflowY: "scroll" }}>
+          <h1 className="mr-5 color-pink">Moves and alerts</h1>
           {gameData &&
             gameData.moveHistory &&
             gameData.moveHistory.map((move, index) => (
-              <p key={index}>
+              <p className="text-light" key={index}>
                 {move.color} {move.piece} moved from {move.from} to {move.to}
               </p>
             ))}
-        </div>
+        </div> */}
       </div>
     </div>
   );

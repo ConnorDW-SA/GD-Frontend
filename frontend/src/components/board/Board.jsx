@@ -12,6 +12,8 @@ const Board = ({ gameId, socket }) => {
   const [loggedInUserColor, setLoggedInUserColor] = useState(null);
   const [gameData, setGameData] = useState(null);
   const currentUserId = useStore((state) => state.user._id);
+  const currentUser = useStore((state) => state.user);
+  console.log(currentUser);
   const fetchGameState = useStore((state) => state.fetchGameState);
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
@@ -71,7 +73,6 @@ const Board = ({ gameId, socket }) => {
 
   return (
     <div>
-      <h1>Chess Board</h1>
       <div className="board">
         {chessBoard.map((row, rowIndex) => (
           <div key={`row-${rowIndex}`} className="board-row d-flex">
@@ -82,6 +83,12 @@ const Board = ({ gameId, socket }) => {
                 className={`board-square ${square.color}`}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
+                  if (
+                    square.piece &&
+                    square.piece.color === gameData.currentTurn
+                  ) {
+                    return;
+                  }
                   playMoveSound();
                   handleDrop(
                     event,
@@ -113,8 +120,10 @@ const Board = ({ gameId, socket }) => {
                     draggable={
                       gameId &&
                       gameData &&
-                      currentUserId === gameData.currentTurn &&
-                      square.piece.color === loggedInUserColor
+                      ((currentUserId === gameData.player1._id &&
+                        square.piece.color === "white") ||
+                        (currentUserId === gameData.player2._id &&
+                          square.piece.color === "black"))
                     }
                     onDragStart={(event) => handleDragStart(event, square)}
                   />

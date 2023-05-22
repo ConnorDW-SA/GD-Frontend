@@ -145,7 +145,7 @@ export const fetchGameState = async (gameId) => {
         currentTurn: currentPlayer,
         player1,
         player2,
-        moveHistory
+        moveHistory: moveHistory
       };
     } else {
       throw new Error("Failed to fetch game state.");
@@ -168,7 +168,6 @@ export const updateGameState = async (
     currentPlayer
   });
   try {
-    // Fetch the current game data
     const gameResponse = await fetch(`http://localhost:3001/games/${gameId}`, {
       method: "GET",
       headers: {
@@ -182,8 +181,6 @@ export const updateGameState = async (
     }
 
     const gameData = await gameResponse.json();
-
-    // Combine the existing moveHistory with the new move
     const updatedMoveHistory = [...gameData.moveHistory, ...moveHistory];
 
     const response = await fetch(`http://localhost:3001/games/${gameId}`, {
