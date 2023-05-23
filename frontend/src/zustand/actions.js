@@ -139,13 +139,12 @@ export const fetchGameState = async (gameId) => {
     if (response.ok) {
       const data = await response.json();
       console.log("Fetched game state:", data);
-      const { boardState, currentPlayer, player1, player2, moveHistory } = data;
+      const { boardState, currentPlayer, player1, player2 } = data;
       return {
         boardState: boardState,
         currentTurn: currentPlayer,
         player1,
-        player2,
-        moveHistory: moveHistory
+        player2
       };
     } else {
       throw new Error("Failed to fetch game state.");
@@ -159,7 +158,7 @@ export const updateGameState = async (
   gameId,
   boardState,
   currentPlayer,
-  moveHistory,
+
   set
 ) => {
   console.log("updateGameState called with:", {
@@ -181,7 +180,6 @@ export const updateGameState = async (
     }
 
     const gameData = await gameResponse.json();
-    const updatedMoveHistory = [...gameData.moveHistory, ...moveHistory];
 
     const response = await fetch(`http://localhost:3001/games/${gameId}`, {
       method: "PUT",
@@ -191,8 +189,7 @@ export const updateGameState = async (
       },
       body: JSON.stringify({
         boardState,
-        currentPlayer: currentPlayer,
-        moveHistory: updatedMoveHistory
+        currentPlayer: currentPlayer
       })
     });
 

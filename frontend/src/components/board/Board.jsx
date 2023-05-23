@@ -59,16 +59,19 @@ const Board = ({ gameId, socket }) => {
             assignSquareColors(initialBoardState)
           );
           setChessBoard(updatedBoard);
-          setGameData(fetchedData);
+          setGameData({
+            ...fetchedData,
+            currentPlayer: moveInfo.currentPlayer
+          });
         }
       });
-    }
 
-    return () => {
-      if (socket) {
-        socket.off("opponent move");
-      }
-    };
+      return () => {
+        if (socket) {
+          socket.off("opponent move");
+        }
+      };
+    }
   }, [socket]);
 
   return (
@@ -85,7 +88,7 @@ const Board = ({ gameId, socket }) => {
                 onDrop={(event) => {
                   if (
                     square.piece &&
-                    square.piece.color === gameData.currentTurn
+                    square.piece.color === gameData.currentPlayer
                   ) {
                     return;
                   }
@@ -95,18 +98,18 @@ const Board = ({ gameId, socket }) => {
                     square,
                     chessBoard,
                     setChessBoard,
-                    gameData && gameData.currentTurn,
+                    gameData && gameData.currentPlayer,
                     () => {
                       setGameData({
                         ...gameData,
-                        currentTurn:
-                          gameData.currentTurn === "white" ? "black" : "white"
+                        currentPlayer:
+                          gameData.currentPlayer === "white" ? "black" : "white"
                       });
                     },
                     updateGameState,
                     gameId,
                     socket,
-                    (gameData && gameData.moveHistory) || [],
+
                     set
                   );
                 }}

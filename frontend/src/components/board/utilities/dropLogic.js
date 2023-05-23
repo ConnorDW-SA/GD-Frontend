@@ -34,7 +34,6 @@ export async function handleDrop(
   socket,
   moveHistory
 ) {
-
   event.preventDefault();
   const sourceSquare = JSON.parse(event.dataTransfer.getData("text/plain"));
 
@@ -243,30 +242,19 @@ White plays first by default
   };
 
   setCurrentTurn(currentTurn === "white" ? "black" : "white");
-  const formattedBoardState = formatBoardState(tempBoard);
-  const updatedMoveHistory = [
-    ...moveHistory,
-    {
-      from: sourceSquare.position,
-      to: destinationSquare.position,
-      piece: sourceSquare.piece.type,
-      color: sourceSquare.piece.color
-    }
-  ];
 
-  await updateGameState(
-    gameId,
-    formattedBoardState,
-    currentTurn,
-    updatedMoveHistory
-  );
+  const nextTurn = currentTurn === "white" ? "black" : "white";
+  setCurrentTurn(nextTurn);
+
+  const formattedBoardState = formatBoardState(tempBoard);
+
+  await updateGameState(gameId, formattedBoardState, nextTurn);
   socket.emit("player move", {
     gameId,
     moveInfo: {
       boardState: formattedBoardState,
-      currentPlayer: currentTurn === "white" ? "black" : "white",
-      currentTurn: currentTurn === "white" ? "black" : "white",
-      moveHistory: updatedMoveHistory
+      currentPlayer: nextTurn,
+      currentTurn: nextTurn
     }
   });
 
@@ -274,7 +262,7 @@ White plays first by default
     gameId,
     moveInfo: {
       boardState: formattedBoardState,
-      currentTurn: currentTurn === "white" ? "black" : "white"
+      currentTurn: nextTurn
     }
   });
   console.log("sourceSquare:", sourceSquare);
