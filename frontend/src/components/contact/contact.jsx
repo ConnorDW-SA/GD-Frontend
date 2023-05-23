@@ -8,7 +8,7 @@ export default function contact() {
         <MyNavbar />
         <div className="contact-content">
           {/* <img src={Github} alt="github" className="github-contact" /> */}
-          <div>Github</div>
+          <div>Github : </div>
           <div>Email</div>
         </div>
       </div>
