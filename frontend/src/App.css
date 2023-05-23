@@ -206,3 +206,15 @@ a {
   background-color: rgba(0, 0, 0, 0.3);
   transition: 0.5s;
 }
+
+.contact-page {
+  height: 100vh;
+  background-image: url(./assets/pics/main.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.github-contact {
+  background: none;
+  z-index: 0;
+}

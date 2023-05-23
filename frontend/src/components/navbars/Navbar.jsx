@@ -14,10 +14,12 @@ export default function MyNavbar() {
   return (
     <Navbar className="sticky-top navbar-navbar">
       <div className="navbar nav d-flex justify-content-between align-items-center">
-        <div className="d-flex align-items-center">
-          <img className="logo-img" src={blackKnight} alt="logo" />
-          <h5 className="nav navbar-links ml-2">GD</h5>
-        </div>
+        <a href="/home">
+          <div className="d-flex align-items-center">
+            <img className="logo-img" src={blackKnight} alt="logo" />
+            <h5 className="nav navbar-links ml-2">GD</h5>
+          </div>
+        </a>
         <a href="/rules">
           <h5 className="nav navbar-links">Chess Rules</h5>
         </a>
