@@ -6,10 +6,16 @@ import { useStore } from "../../zustand/store";
 import MyNavbar from "../navbars/Navbar";
 const GamePage = () => {
   const { gameId } = useParams();
+  const currentUserId = useStore((state) => state.user._id);
+
   const socket = io("http://localhost:3001");
   const [gameData, setGameData] = useState(null);
   const fetchGameState = useStore((state) => state.fetchGameState);
-
+  const getOpponentUsername = (game, userId) => {
+    return game.player1._id === userId
+      ? game.player2.username
+      : game.player1.username;
+  };
   useEffect(() => {
     async function fetchData() {
       const fetchedData = await fetchGameState(gameId);
@@ -46,7 +52,7 @@ const GamePage = () => {
         {gameData &&
           gameData.player1 &&
           gameData.player2 &&
-          `${gameData.player1.name} vs ${gameData.player2.name}`}
+          `${gameData.player1.name} v ${gameData.player2.name}`}
       </h1>
       <div className="d-flex justify-content-around board-div m-auto pt-5">
         <Board gameId={gameId} socket={socket} />

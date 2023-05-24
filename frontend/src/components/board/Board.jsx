@@ -12,8 +12,6 @@ const Board = ({ gameId, socket }) => {
   const [loggedInUserColor, setLoggedInUserColor] = useState(null);
   const [gameData, setGameData] = useState(null);
   const currentUserId = useStore((state) => state.user._id);
-  const currentUser = useStore((state) => state.user);
-  console.log(currentUser);
   const fetchGameState = useStore((state) => state.fetchGameState);
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
@@ -41,9 +39,10 @@ const Board = ({ gameId, socket }) => {
 
   useEffect(() => {
     if (gameData) {
-      if (gameData.player1 === currentUserId) {
+      console.log("usercolor:", gameData, currentUserId);
+      if (gameData.player1._id === currentUserId) {
         setLoggedInUserColor("white");
-      } else if (gameData.player2 === currentUserId) {
+      } else if (gameData.player2._id === currentUserId) {
         setLoggedInUserColor("black");
       }
     }
@@ -72,18 +71,22 @@ const Board = ({ gameId, socket }) => {
         }
       };
     }
-  }, [socket]);
+  }, [socket, fetchGameState, gameId]);
 
   return (
     <div>
-      <div className="board">
+      <div
+        className={`board ${
+          loggedInUserColor === "black" ? "board-rotate" : ""
+        }`}
+      >
         {chessBoard.map((row, rowIndex) => (
           <div key={`row-${rowIndex}`} className="board-row d-flex">
             {row.map((square, squareIndex) => (
               <div
                 key={`${square.position}-${squareIndex}`}
                 id={square.position}
-                className={`board-square ${square.color}`}
+                className={`board-square ${square.color}  `}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
                   if (
@@ -119,7 +122,11 @@ const Board = ({ gameId, socket }) => {
                     key={`${square.piece.color}-${square.piece.type}`}
                     src={square.piece.image}
                     alt=""
-                    className={`chess-piece ${square.piece.color} ${square.piece.type}`}
+                    className={`chess-piece ${square.piece.color} ${
+                      square.piece.type
+                    } ${
+                      loggedInUserColor === "black" ? "chess-piece-rotate" : ""
+                    }`}
                     draggable={
                       gameId &&
                       gameData &&
