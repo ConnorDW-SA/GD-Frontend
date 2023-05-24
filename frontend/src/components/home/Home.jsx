@@ -6,7 +6,7 @@ import leftImage from "../../assets/background/background-one.png";
 import rightImage from "../../assets/background/background-two.png";
 import rightImageTwo from "../../assets/background/background-three.png";
 import leftImageTwo from "../../assets/background/background-four.png";
-
+import { Button } from "react-bootstrap";
 const HomePage = () => {
   const logState = useStore((state) => state.logState);
   const currentUser = useStore((state) => state.user);
@@ -44,8 +44,7 @@ const HomePage = () => {
               <span className="test display-3">{currentUser.username}</span>
             </h1>
             <h3 className="display-5 text-center mt-5">
-              Test your chess skills here. No signup, no details.
-              <br /> Just Chess.
+              Test your chess skills here.
             </h3>
           </div>
           <div className="images-box">
@@ -55,9 +54,9 @@ const HomePage = () => {
         </div>
 
         <div className="section-two">
-          <div className="half-section d-flex justify-content-between w-50">
-            <div className="half-section-one">
-              <h2 className="color-pink">Start a new game</h2>
+          <div className="half-section d-flex justify-content-around w-100">
+            <div className="half-section-one mr-5 text-dark">
+              <h2 className=" pb-3 text-center display-5">Start a new game</h2>
               {users && users.length > 0 ? (
                 users.map((user) => (
                   <div
@@ -80,23 +79,26 @@ const HomePage = () => {
                 <h1>No users</h1>
               )}
             </div>{" "}
-            <div className="half-section-two">
-              <h2 className="color-pink">Continue where you left off!</h2>
+            <div className="half-section-two  text-dark">
+              <h2 className="pb-3 text-center  display-5">
+                Continue where you left off
+              </h2>
               {games && games.length > 0 ? (
                 games.map((game) => (
                   <div
                     key={game._id}
-                    className="d-flex justify-content-between m-3"
+                    className="d-flex justify-content-between m-4"
                   >
+                    {" "}
                     <span className="mt-2">
                       {getOpponentUsername(game, currentUserId)}
                     </span>
-                    <button
-                      className="btn btn-success"
+                    <Button
+                      className="btn-right"
                       onClick={() => navigate(`/game/${game._id}`)}
                     >
                       Resume
-                    </button>
+                    </Button>
                   </div>
                 ))
               ) : (
@@ -117,5 +119,4 @@ const HomePage = () => {
     </>
   );
 };
-
 export default HomePage;

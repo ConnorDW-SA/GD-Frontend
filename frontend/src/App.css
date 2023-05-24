@@ -145,6 +145,42 @@ a {
   pointer-events: none;
 }
 
+.half-section-one,
+.half-section-two {
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.5);
+  min-width: 700px;
+  max-width: 700px;
+  z-index: 2;
+  padding: 100px;
+  border-radius: 40px;
+  opacity: 0.5;
+}
+.half-section-one:hover,
+.half-section-two:hover {
+  transform: scale(0.95);
+  opacity: 1;
+}
+.half-section-one {
+  background-image: url(./assets//pics/main.jpg);
+  background-size: cover;
+}
+
+.half-section-two {
+  background-image: url(./assets//pics/mainthree.jpg);
+  background-size: cover;
+}
+
+.btn-left {
+  background-color: #4b153e !important;
+  border: none !important;
+}
+
+.btn-right {
+  background-color: #291a5e !important;
+  border: none !important;
+}
+
 /* ---------------- Board ---------------- */
 
 .board-div {
