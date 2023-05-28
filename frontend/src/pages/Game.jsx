@@ -10,7 +10,7 @@ const GamePage = () => {
 
   const socket = io("http://localhost:3001");
   const [gameData, setGameData] = useState(null);
-  const fetchGameState = useStore((state) => state.fetchGameState);
+  const fetchCurrentGame = useStore((state) => state.fetchCurrentGame);
   const getOpponentUsername = (game, userId) => {
     return game.player1._id === userId
       ? game.player2.username
@@ -18,7 +18,7 @@ const GamePage = () => {
   };
   useEffect(() => {
     async function fetchData() {
-      const fetchedData = await fetchGameState(gameId);
+      const fetchedData = await fetchCurrentGame(gameId);
       console.log("this is fetched data", fetchedData);
       if (fetchedData) {
         setGameData({
@@ -35,7 +35,7 @@ const GamePage = () => {
       }
     }
     fetchData();
-  }, [gameId, fetchGameState]);
+  }, [gameId, fetchCurrentGame]);
 
   useEffect(() => {
     socket.emit("join game", gameId);

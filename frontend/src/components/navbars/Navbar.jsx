@@ -9,7 +9,8 @@ export default function MyNavbar() {
 
   const navigate = useNavigate();
   const handleLogout = () => {
-    logout(navigate);
+    logout();
+    navigate("/");
   };
   return (
     <Navbar className="sticky-top navbar-navbar">

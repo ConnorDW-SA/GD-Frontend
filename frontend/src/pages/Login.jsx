@@ -5,7 +5,7 @@ import { useStore } from "../zustand/store";
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
-  const loginRegisterUser = useStore((state) => state.loginRegisterUser);
+  const loginRegisterUser = useStore((state) => state.loginRegister);
   const username = useStore((state) => state.user?.username);
   const isLoggedIn = useStore((state) => state.isLoggedIn);
 
@@ -26,12 +26,11 @@ const LoginPage = () => {
     const password = event.target.password.value;
     const username = isLogin ? null : event.target.username.value;
 
-    const success = await loginRegisterUser(email, password, username);
-    if (success) {
-      navigate("/home");
-    } else {
-      alert("Error");
-    }
+    await loginRegisterUser({
+      email: email,
+      password: password,
+      username: username
+    });
   };
 
   return (

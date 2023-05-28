@@ -12,10 +12,10 @@ const Board = ({ gameId, socket }) => {
   const [loggedInUserColor, setLoggedInUserColor] = useState(null);
   const [gameData, setGameData] = useState(null);
   const currentUserId = useStore((state) => state.user._id);
-  const fetchGameState = useStore((state) => state.fetchGameState);
+  const fetchGameState = useStore((state) => state.fetchCurrentGame);
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
-  const updateGameState = useStore((state) => state.updateGameState);
+  const updateGameState = useStore((state) => state.updateCurrentGame);
   const playMoveSound = () => {
     const audio = new Audio(moveSound);
     audio.play();

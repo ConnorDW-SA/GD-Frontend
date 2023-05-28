@@ -15,7 +15,7 @@ const HomePage = () => {
 
   const fetchUsers = useStore((state) => state.fetchUsers);
   const createGame = useStore((state) => state.createGame);
-  const fetchUserGames = useStore((state) => state.fetchUserGames);
+  const fetchUserGames = useStore((state) => state.fetchGames);
   const games = useStore((state) => state.userGames);
   const currentUserId = useStore((state) => state.user._id);
   const getOpponentUsername = (game, userId) => {
