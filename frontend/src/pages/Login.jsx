@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useStore } from "../../zustand/store";
+import { useStore } from "../zustand/store";
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
   const loginRegisterUser = useStore((state) => state.loginRegisterUser);
-  const logState = useStore((state) => state.logState);
+  const username = useStore((state) => state.user?.username);
+  const isLoggedIn = useStore((state) => state.isLoggedIn);
 
-  logState();
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(`/home/${username}`);
+    }
+  }, [isLoggedIn, navigate, username]);
+
   const switchForm = () => {
     setIsLogin(!isLogin);
   };

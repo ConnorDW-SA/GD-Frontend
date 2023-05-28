@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Board from "../board/Board";
+import Board from "../components/board/Board";
 import { io } from "socket.io-client";
-import { useStore } from "../../zustand/store";
-import MyNavbar from "../navbars/Navbar";
+import { useStore } from "../zustand/store";
+import MyNavbar from "../components/navbars/Navbar";
 const GamePage = () => {
   const { gameId } = useParams();
   const currentUserId = useStore((state) => state.user._id);

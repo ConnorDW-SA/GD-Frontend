@@ -25,7 +25,6 @@ export const loginRegisterUser = async (
         get().setUser({
           ...data.user,
           username: data.user.username
-          // id: data.user._id
         });
         get().setLoginState(true);
       } else {

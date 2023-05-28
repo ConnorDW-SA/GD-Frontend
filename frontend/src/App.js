@@ -1,8 +1,8 @@
 import "./App.css";
 import React from "react";
-import LoginPage from "./components/login/Login";
-import HomePage from "./components/home/Home";
-import GamePage from "./components/gamepage/Game";
+import LoginPage from "./pages/Login";
+import HomePage from "./pages/Home";
+import GamePage from "./pages/Game";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Contact from "./components/contact/contact";
@@ -11,7 +11,7 @@ const App = () => (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/home/:username" element={<HomePage />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/game/:gameId" element={<GamePage />} />
       </Routes>

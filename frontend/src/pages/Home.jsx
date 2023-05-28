@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import { useStore } from "../../zustand/store";
+import { useStore } from "../zustand/store";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../navbars/Navbar";
-import leftImage from "../../assets/background/background-one.png";
-import rightImage from "../../assets/background/background-two.png";
-import rightImageTwo from "../../assets/background/background-three.png";
-import leftImageTwo from "../../assets/background/background-four.png";
+import Navbar from "../components/navbars/Navbar";
+import leftImage from "../assets/background/background-one.png";
+import rightImage from "../assets/background/background-two.png";
+import rightImageTwo from "../assets/background/background-three.png";
+import leftImageTwo from "../assets/background/background-four.png";
 import { Button } from "react-bootstrap";
+
 const HomePage = () => {
   const logState = useStore((state) => state.logState);
   const currentUser = useStore((state) => state.user);
