@@ -6,16 +6,10 @@ import { useStore } from "../zustand/store";
 import MyNavbar from "../components/navbars/Navbar";
 const GamePage = () => {
   const { gameId } = useParams();
-  const currentUserId = useStore((state) => state.user._id);
-
   const socket = io("http://localhost:3001");
   const [gameData, setGameData] = useState(null);
   const fetchCurrentGame = useStore((state) => state.fetchCurrentGame);
-  const getOpponentUsername = (game, userId) => {
-    return game.player1._id === userId
-      ? game.player2.username
-      : game.player1.username;
-  };
+
   useEffect(() => {
     async function fetchData() {
       const fetchedData = await fetchCurrentGame(gameId);
@@ -56,16 +50,6 @@ const GamePage = () => {
       </h1>
       <div className="d-flex justify-content-around board-div m-auto pt-5">
         <Board gameId={gameId} socket={socket} />
-        {/* <div style={{ maxHeight: "500px", overflowY: "scroll" }}>
-          <h1 className="mr-5 color-pink">Moves and alerts</h1>
-          {gameData &&
-            gameData.moveHistory &&
-            gameData.moveHistory.map((move, index) => (
-              <p className="text-light" key={index}>
-                {move.color} {move.piece} moved from {move.from} to {move.to}
-              </p>
-            ))}
-        </div> */}
       </div>
     </div>
   );

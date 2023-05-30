@@ -11,8 +11,6 @@ export const useStore = create(
   persist(
     (set, get) => ({
       user: null,
-      users: [],
-      userGames: [],
       currentGame: null,
       isLoggedIn: false,
       isLoading: false,
@@ -53,48 +51,8 @@ export const useStore = create(
           isLoggedIn: false
         });
       },
-
       setUser: (user) => set({ user }),
       setLoginState: (isLoggedIn) => set({ isLoggedIn }),
-      fetchUsers: async () => {
-        set({ isLoading: true, error: null });
-        try {
-          const response = await fetch("http://localhost:3001/users/allUsers", {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-            }
-          });
-          if (response.ok) {
-            const users = await response.json();
-            set({ users, isLoading: false });
-          } else {
-            set({ error: ErrorMessages.ServerError, isLoading: false });
-          }
-        } catch (error) {
-          set({ error: ErrorMessages.ServerError, isLoading: false });
-        }
-      },
-      fetchGames: async () => {
-        set({ isLoading: true, error: null });
-        try {
-          const response = await fetch(
-            "http://localhost:3001/games/userGames",
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-              }
-            }
-          );
-          if (response.ok) {
-            const userGames = await response.json();
-            set({ userGames, isLoading: false });
-          } else {
-            set({ error: ErrorMessages.ServerError, isLoading: false });
-          }
-        } catch (error) {
-          set({ error: ErrorMessages.ServerError, isLoading: false });
-        }
-      },
       fetchCurrentGame: async (gameId) => {
         set({ isLoading: true, error: null });
         try {
@@ -132,29 +90,58 @@ export const useStore = create(
         }
       },
 
-      updateCurrentGame: async (game) => {
-        set({ isLoading: true, error: null });
+      updateCurrentGame: async (gameId, boardState, currentPlayer, set) => {
+        console.log("updateGameState called with:", {
+          gameId,
+          boardState,
+          currentPlayer
+        });
         try {
+          const gameResponse = await fetch(
+            `http://localhost:3001/games/${gameId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+              }
+            }
+          );
+
+          if (!gameResponse.ok) {
+            throw new Error("Failed to fetch game data.");
+          }
           const response = await fetch(
-            `http://localhost:3001/games/${game._id}`,
+            `http://localhost:3001/games/${gameId}`,
             {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
               },
-              body: JSON.stringify(game)
+              body: JSON.stringify({
+                boardState,
+                currentPlayer: currentPlayer
+              })
             }
           );
 
-          if (response.ok) {
-            const updatedGameData = await response.json();
-            set({ currentGame: { ...updatedGameData }, isLoading: false });
-          } else {
-            set({ error: ErrorMessages.ServerError, isLoading: false });
+          console.log("Response status:", response.status);
+          if (!response.ok) {
+            throw new Error("Failed to update game state.");
           }
+
+          const data = await response.json();
+          const {
+            boardState: updatedBoardState,
+            currentPlayer: updatedCurrentPlayer
+          } = data;
+          set({
+            boardState: updatedBoardState,
+            currentPlayer: updatedCurrentPlayer
+          });
         } catch (error) {
-          set({ error: ErrorMessages.ServerError, isLoading: false });
+          console.error("Error updating game state:", error.message);
         }
       },
       setCurrentPlayerId: (id) => set({ currentPlayerId: id }),
@@ -163,11 +150,7 @@ export const useStore = create(
           "Current user:",
           get().user,
           "logged in:",
-          get().isLoggedIn,
-          "Users:",
-          get().users,
-          "Games:",
-          get().userGames
+          get().isLoggedIn
         );
       }
     }),

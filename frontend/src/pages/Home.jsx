@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useStore } from "../zustand/store";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/navbars/Navbar";
@@ -11,27 +11,85 @@ import { Button } from "react-bootstrap";
 const HomePage = () => {
   const logState = useStore((state) => state.logState);
   const currentUser = useStore((state) => state.user);
-  const users = useStore((state) => state.users);
-
-  const fetchUsers = useStore((state) => state.fetchUsers);
-  const createGame = useStore((state) => state.createGame);
-  const fetchUserGames = useStore((state) => state.fetchGames);
-  const games = useStore((state) => state.userGames);
-  const currentUserId = useStore((state) => state.user._id);
   const getOpponentUsername = (game, userId) => {
     return game.player1._id === userId
       ? game.player2.username
       : game.player1.username;
   };
+  const [users, setUsers] = useState([]);
+  const [games, setGames] = useState([]);
 
   const navigate = useNavigate();
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/users/allUsers", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
+      });
+
+      if (response.ok) {
+        const users = await response.json();
+        setUsers(users);
+      } else {
+        throw new Error("Failed to fetch users.");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error.message);
+    }
+  };
+
+  const fetchUserGames = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/games/userGames", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
+      });
+
+      if (response.ok) {
+        const userGames = await response.json();
+        setGames(userGames);
+      } else {
+        throw new Error("Failed to fetch user games.");
+      }
+    } catch (error) {
+      console.error("Error fetching user games:", error.message);
+    }
+  };
+
+  const createGame = async (player2Id) => {
+    try {
+      const response = await fetch("http://localhost:3001/games/createGame", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        },
+        body: JSON.stringify({ player2: player2Id })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const game = await response.json();
+      console.log(game);
+      navigate(`/game/${game._id}`);
+    } catch (error) {
+      console.error("Failed to create game", error);
+    }
+  };
 
   useEffect(() => {
     fetchUsers();
     fetchUserGames();
+    logState();
   }, []);
-
-  logState();
 
   return (
     <>
@@ -65,15 +123,12 @@ const HomePage = () => {
                     className="d-flex justify-content-between m-3"
                   >
                     <span className="mt-2">{user.username}</span>
-                    <button
-                      className="btn btn-dark"
-                      onClick={async () => {
-                        const gameId = await createGame(user._id);
-                        navigate(`/game/${gameId}`);
-                      }}
+                    <Button
+                      className="btn-left"
+                      onClick={() => createGame(user._id)}
                     >
                       Challenge
-                    </button>
+                    </Button>
                   </div>
                 ))
               ) : (
@@ -92,7 +147,7 @@ const HomePage = () => {
                   >
                     {" "}
                     <span className="mt-2">
-                      {getOpponentUsername(game, currentUserId)}
+                      {getOpponentUsername(game, currentUser._id)}
                     </span>
                     <Button
                       className="btn-right"
