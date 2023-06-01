@@ -45,14 +45,16 @@ export const useStore = create(
         localStorage.removeItem("accessToken");
         set({
           user: null,
-          users: null,
-          userGames: null,
           currentGame: null,
-          isLoggedIn: false
+          isLoggedIn: false,
+          isLoading: false,
+          error: null,
+          currentPlayerId: null
         });
       },
       setUser: (user) => set({ user }),
       setLoginState: (isLoggedIn) => set({ isLoggedIn }),
+
       fetchCurrentGame: async (gameId) => {
         set({ isLoading: true, error: null });
         try {
@@ -66,22 +68,11 @@ export const useStore = create(
           );
           if (response.ok) {
             const gameData = await response.json();
-            const { boardState, currentPlayer, player1, player2 } = gameData;
+
             set({
-              currentGame: {
-                boardState: boardState,
-                currentTurn: currentPlayer,
-                player1,
-                player2
-              },
+              currentGame: gameData,
               isLoading: false
             });
-            return {
-              boardState: boardState,
-              currentTurn: currentPlayer,
-              player1,
-              player2
-            };
           } else {
             set({ error: ErrorMessages.ServerError, isLoading: false });
           }
@@ -90,58 +81,29 @@ export const useStore = create(
         }
       },
 
-      updateCurrentGame: async (gameId, boardState, currentPlayer, set) => {
-        console.log("updateGameState called with:", {
-          gameId,
-          boardState,
-          currentPlayer
-        });
+      updateCurrentGame: async (gameData) => {
+        set({ isLoading: true, error: null });
         try {
-          const gameResponse = await fetch(
-            `http://localhost:3001/games/${gameId}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-              }
-            }
-          );
-
-          if (!gameResponse.ok) {
-            throw new Error("Failed to fetch game data.");
-          }
           const response = await fetch(
-            `http://localhost:3001/games/${gameId}`,
+            `http://localhost:3001/games/${gameData._id}`,
             {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("accessToken")}`
               },
-              body: JSON.stringify({
-                boardState,
-                currentPlayer: currentPlayer
-              })
+              body: JSON.stringify(gameData)
             }
           );
 
-          console.log("Response status:", response.status);
-          if (!response.ok) {
-            throw new Error("Failed to update game state.");
+          if (response.ok) {
+            const updatedGameData = await response.json();
+            set({ currentGame: { ...updatedGameData }, isLoading: false });
+          } else {
+            set({ error: ErrorMessages.ServerError, isLoading: false });
           }
-
-          const data = await response.json();
-          const {
-            boardState: updatedBoardState,
-            currentPlayer: updatedCurrentPlayer
-          } = data;
-          set({
-            boardState: updatedBoardState,
-            currentPlayer: updatedCurrentPlayer
-          });
         } catch (error) {
-          console.error("Error updating game state:", error.message);
+          set({ error: ErrorMessages.ServerError, isLoading: false });
         }
       },
       setCurrentPlayerId: (id) => set({ currentPlayerId: id }),

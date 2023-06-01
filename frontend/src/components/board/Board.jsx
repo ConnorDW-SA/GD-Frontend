@@ -8,11 +8,13 @@ import { handleDrop, handleDragStart } from "./utilities/dropLogic";
 import { useStore } from "../../zustand/store";
 import moveSound from "../../assets/move.mp3";
 
-const Board = ({ gameId, socket }) => {
+const Board = ({ gameId, socket, gameState }) => {
   const [loggedInUserColor, setLoggedInUserColor] = useState(null);
-  const [gameData, setGameData] = useState(null);
+
   const currentUserId = useStore((state) => state.user._id);
-  const fetchGameState = useStore((state) => state.fetchCurrentGame);
+  console.log(gameId);
+  const gameData = gameState;
+  console.log(gameData);
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
   const updateGameState = useStore((state) => state.updateCurrentGame);
@@ -24,54 +26,19 @@ const Board = ({ gameId, socket }) => {
 
   useEffect(() => {
     async function fetchData() {
-      const fetchedData = await fetchGameState(gameId);
+      const fetchedData = gameData;
+
       if (fetchedData) {
         const updatedBoard = mapPiecesToBoard(
           fetchedData.boardState,
           assignSquareColors(initialBoardState)
         );
         setChessBoard(updatedBoard);
-        setGameData(fetchedData);
+        // setGameData(fetchedData);
       }
     }
     fetchData();
   }, [gameId]);
-
-  useEffect(() => {
-    if (gameData) {
-      console.log("usercolor:", gameData, currentUserId);
-      if (gameData.player1._id === currentUserId) {
-        setLoggedInUserColor("white");
-      } else if (gameData.player2._id === currentUserId) {
-        setLoggedInUserColor("black");
-      }
-    }
-  }, [gameData, currentUserId]);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("opponent move", async (moveInfo) => {
-        const fetchedData = await fetchGameState(gameId);
-        if (fetchedData) {
-          const updatedBoard = mapPiecesToBoard(
-            fetchedData.boardState,
-            assignSquareColors(initialBoardState)
-          );
-          setChessBoard(updatedBoard);
-          setGameData({
-            ...fetchedData,
-            currentPlayer: moveInfo.currentPlayer
-          });
-        }
-      });
-
-      return () => {
-        if (socket) {
-          socket.off("opponent move");
-        }
-      };
-    }
-  }, [socket, fetchGameState, gameId]);
 
   return (
     <div>
@@ -89,12 +56,6 @@ const Board = ({ gameId, socket }) => {
                 className={`board-square ${square.color}  `}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
-                  if (
-                    square.piece &&
-                    square.piece.color === gameData.currentPlayer
-                  ) {
-                    return;
-                  }
                   playMoveSound();
                   handleDrop(
                     event,
@@ -103,11 +64,11 @@ const Board = ({ gameId, socket }) => {
                     setChessBoard,
                     gameData && gameData.currentPlayer,
                     () => {
-                      setGameData({
-                        ...gameData,
-                        currentPlayer:
-                          gameData.currentPlayer === "white" ? "black" : "white"
-                      });
+                      // setGameData({
+                      //   ...gameData,
+                      //   currentPlayer:
+                      //     gameData.currentPlayer === "white" ? "black" : "white"
+                      // });
                     },
                     updateGameState,
                     gameId,
