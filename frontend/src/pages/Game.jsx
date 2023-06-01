@@ -12,9 +12,9 @@ const GamePage = () => {
   const setCurrentPlayerId = useStore((state) => state.setCurrentPlayerId);
   const currentGame = useStore((state) => state.currentGame);
   const [socket, setSocket] = useState(null);
+
   useEffect(() => {
     if (gameId) fetchCurrentGame(gameId);
-    console.log();
   }, [fetchCurrentGame, gameId]);
 
   useEffect(() => {
@@ -25,7 +25,6 @@ const GamePage = () => {
     newSocket.emit("fetch_game", gameId);
 
     newSocket.on("game_updated", (updatedGame) => {
-      console.log(updatedGame);
       updateCurrentGame(updatedGame);
     });
 
@@ -44,7 +43,6 @@ const GamePage = () => {
     newSocket.emit("fetch_game", gameId);
     newSocket.on("move_made", (currentPlayerId) => {
       setCurrentPlayerId(currentPlayerId);
-
       fetchCurrentGame(gameId);
     });
 

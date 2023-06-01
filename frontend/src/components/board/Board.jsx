@@ -9,32 +9,29 @@ import { useStore } from "../../zustand/store";
 import moveSound from "../../assets/move.mp3";
 
 const Board = ({ gameId, socket, gameState }) => {
-  const [loggedInUserColor, setLoggedInUserColor] = useState(null);
-
-  const currentUserId = useStore((state) => state.user._id);
-  console.log(gameId);
   const gameData = gameState;
-  console.log(gameData);
+  console.log(gameData, "here");
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
   const updateGameState = useStore((state) => state.updateCurrentGame);
+  const currentUserId = useStore((state) => state.user?._id);
+  const userColor = gameData?.player1._id === currentUserId ? "white" : "black";
+
   const playMoveSound = () => {
     const audio = new Audio(moveSound);
     audio.play();
   };
-  const set = useStore((state) => state.set);
 
   useEffect(() => {
     async function fetchData() {
-      const fetchedData = gameData;
+      const gameState = gameData;
 
-      if (fetchedData) {
+      if (gameState) {
         const updatedBoard = mapPiecesToBoard(
-          fetchedData.boardState,
+          gameState.boardState,
           assignSquareColors(initialBoardState)
         );
         setChessBoard(updatedBoard);
-        // setGameData(fetchedData);
       }
     }
     fetchData();
@@ -42,11 +39,7 @@ const Board = ({ gameId, socket, gameState }) => {
 
   return (
     <div>
-      <div
-        className={`board ${
-          loggedInUserColor === "black" ? "board-rotate" : ""
-        }`}
-      >
+      <div className={`board ${userColor === "black" ? "board-rotate" : ""}`}>
         {chessBoard.map((row, rowIndex) => (
           <div key={`row-${rowIndex}`} className="board-row d-flex">
             {row.map((square, squareIndex) => (
@@ -55,27 +48,20 @@ const Board = ({ gameId, socket, gameState }) => {
                 id={square.position}
                 className={`board-square ${square.color}  `}
                 onDragOver={(event) => event.preventDefault()}
-                onDrop={(event) => {
+                onDrop={async (event) => {
                   playMoveSound();
-                  handleDrop(
+                  const newGameState = await handleDrop(
                     event,
                     square,
                     chessBoard,
-                    setChessBoard,
-                    gameData && gameData.currentPlayer,
-                    () => {
-                      // setGameData({
-                      //   ...gameData,
-                      //   currentPlayer:
-                      //     gameData.currentPlayer === "white" ? "black" : "white"
-                      // });
-                    },
-                    updateGameState,
-                    gameId,
-                    socket,
-
-                    set
+                    setChessBoard
                   );
+                  const gameDataToUpdate = {
+                    _id: gameId,
+                    boardState: newGameState
+                  };
+
+                  updateGameState(gameDataToUpdate);
                 }}
               >
                 {square.piece && (
@@ -85,16 +71,15 @@ const Board = ({ gameId, socket, gameState }) => {
                     alt=""
                     className={`chess-piece ${square.piece.color} ${
                       square.piece.type
-                    } ${
-                      loggedInUserColor === "black" ? "chess-piece-rotate" : ""
-                    }`}
+                    } ${userColor === "black" ? "chess-piece-rotate" : ""}`}
                     draggable={
                       gameId &&
                       gameData &&
                       ((currentUserId === gameData.player1._id &&
                         square.piece.color === "white") ||
                         (currentUserId === gameData.player2._id &&
-                          square.piece.color === "black"))
+                          square.piece.color === "black")) &&
+                      currentUserId === gameData.currentPlayer._id
                     }
                     onDragStart={(event) => handleDragStart(event, square)}
                   />

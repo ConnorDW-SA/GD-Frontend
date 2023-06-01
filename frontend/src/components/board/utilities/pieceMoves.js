@@ -2,8 +2,7 @@ import {
   isVerticalMove,
   isDiagonalMove,
   isHorizontalMove,
-  isMoveObstructed,
-  getLastMove
+  isMoveObstructed
 } from "./moveHelpers";
 
 import WhiteQueen from "../../../assets/pieces/w-queen.png";
@@ -12,8 +11,6 @@ import BlackQueen from "../../../assets/pieces/b-queen.png";
 // PAWN LOGIC -----------------------------------------------------------------------
 
 export const legalPawnMove = (sourceSquare, destinationSquare, chessBoard) => {
-  const lastMove = getLastMove();
-
   const sourceRow = parseInt(sourceSquare.position[1]);
   const destinationRow = parseInt(destinationSquare.position[1]);
   const sourceColumn = sourceSquare.position[0];
@@ -37,22 +34,9 @@ export const legalPawnMove = (sourceSquare, destinationSquare, chessBoard) => {
     moveDistance === direction &&
     destinationSquare.piece;
 
-  const isEnPassantCapture =
-    lastMove &&
-    lastMove.isPawnDoubleMove &&
-    lastMove.piece.type === "pawn" &&
-    lastMove.piece.color !== sourceSquare.piece.color &&
-    moveDistance === direction &&
-    destinationRow === (isWhite ? 6 : 3) &&
-    Math.abs(sourceColumn.charCodeAt(0) - destinationColumn.charCodeAt(0)) ===
-      1 &&
-    Math.abs(sourceColumn.charCodeAt(0) - lastMove.to[0].charCodeAt(0)) === 1 &&
-    !destinationSquare.piece;
-
   if (
     (isSameColumn && isVerticalOneOrTwoSquares && !destinationSquare.piece) ||
-    isDiagonalCapture ||
-    isEnPassantCapture
+    isDiagonalCapture
   ) {
     if (
       !isMoveObstructed(
