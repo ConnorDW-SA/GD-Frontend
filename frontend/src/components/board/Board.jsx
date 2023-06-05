@@ -21,6 +21,7 @@ const Board = ({ gameId, socket, gameState }) => {
     const audio = new Audio(moveSound);
     audio.play();
   };
+  // function for opponent color
 
   useEffect(() => {
     async function fetchData() {
