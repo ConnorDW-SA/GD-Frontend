@@ -52,6 +52,8 @@ export function mapPiecesToBoard(gameState, board) {
     }
   };
 
+ 
+
   return board.map((row) =>
     row.map((square) => {
       const piece = gameState.find((p) => p.position === square.position);
