@@ -28,19 +28,6 @@ const GamePage = () => {
       updateCurrentGame(updatedGame);
     });
 
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [updateCurrentGame, gameId]);
-
-  useEffect(() => {
-    const newSocket = io("http://localhost:3001", {
-      transports: ["websocket"]
-    });
-
-    newSocket.emit("fetch_game", gameId);
     newSocket.on("move_made", (currentPlayerId) => {
       setCurrentPlayerId(currentPlayerId);
       fetchCurrentGame(gameId);
@@ -55,7 +42,8 @@ const GamePage = () => {
     fetchCurrentGame,
     gameId,
     currentGame?.currentPlayer,
-    setCurrentPlayerId
+    setCurrentPlayerId,
+    updateCurrentGame
   ]);
 
   return (
@@ -65,7 +53,7 @@ const GamePage = () => {
         {currentGame?.player1.username} vs {currentGame?.player2.username}
       </h1>
       <div className="d-flex justify-content-around board-div m-auto pt-5">
-        <Board gameId={gameId} socket={socket} gameState={currentGame} />
+        <Board gameId={gameId} gameState={currentGame} />
       </div>
     </div>
   );

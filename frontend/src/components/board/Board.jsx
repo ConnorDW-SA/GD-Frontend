@@ -8,9 +8,9 @@ import { handleDrop, handleDragStart } from "./utilities/dropLogic";
 import { useStore } from "../../zustand/store";
 import moveSound from "../../assets/move.mp3";
 
-const Board = ({ gameId, socket, gameState }) => {
+const Board = ({ gameId, gameState }) => {
   const gameData = gameState;
-  console.log(gameData, "here");
+
   const coloredBoard = assignSquareColors(initialBoardState);
   const [chessBoard, setChessBoard] = useState(coloredBoard);
   const updateGameState = useStore((state) => state.updateCurrentGame);
@@ -21,7 +21,6 @@ const Board = ({ gameId, socket, gameState }) => {
     const audio = new Audio(moveSound);
     audio.play();
   };
-  // function for opponent color
 
   useEffect(() => {
     async function fetchData() {
@@ -36,7 +35,7 @@ const Board = ({ gameId, socket, gameState }) => {
       }
     }
     fetchData();
-  }, [gameId]);
+  }, [gameId, gameData]);
 
   return (
     <div>
